@@ -28,7 +28,7 @@ export function useProgramTables(
       const entries: RoundTableEntry[] = []
       for (const id of round.horseIds) {
         const horse = horseById.value.get(id)
-        if (horse) entries.push({ position: entries.length + 1, horse })
+        if (horse) entries.push({ position: entries.length + 1, horse, finishTime: null })
       }
       return { round, entries }
     }),
