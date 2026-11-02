@@ -4,7 +4,7 @@
 
 An interactive horse racing simulation built with Vue 3, TypeScript and Pinia.
 
-**Live demo:** _link added after the first deployment_
+**Live demo:** https://horse-racing-game.erkorkmazemre77.workers.dev
 
 ## Features
 
@@ -110,5 +110,5 @@ Visual tests run inside the official Playwright Docker image, so screenshots ren
 ## Continuous integration and deployment
 
 - GitHub Actions runs lint, type-check, unit tests, the build, the end-to-end tests and the visual tests (inside the Playwright image) on every push and pull request.
-- Every successful CI run for a push to `main` deploys the production build to Cloudflare Pages. Pull requests, including those from forks, never deploy.
+- Cloudflare Workers builds every push to `main` (unit tests, type-check, production build) and publishes the static site; a failing build leaves the previous version live.
 - Hashed assets are served with a one-year immutable cache.
