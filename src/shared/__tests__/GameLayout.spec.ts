@@ -29,6 +29,16 @@ describe('GameLayout', () => {
   it('keeps the track before the side panels in DOM order for keyboard and screen readers', () => {
     const w = mount(GameLayout, { slots })
     const order = w.findAll('main > *').map((el) => el.classes().find((c) => c.startsWith('area-')))
-    expect(order).toEqual(['area-track', 'area-stable', 'area-program', 'area-results'])
+    expect(order).toEqual(['area-track', 'area-stable', 'area-rounds'])
+  })
+
+  it('puts the program and the results into one shared scroll area, program first', () => {
+    const w = mount(GameLayout, { slots })
+    const rounds = w.get('[data-test="rounds-scroll"]')
+    expect(rounds.classes()).toContain('area-rounds')
+    const order = rounds
+      .findAll(':scope > *')
+      .map((el) => el.classes().find((c) => c.startsWith('area-')))
+    expect(order).toEqual(['area-program', 'area-results'])
   })
 })
