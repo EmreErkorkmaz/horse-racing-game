@@ -14,7 +14,7 @@ The numbers below are the defaults in [`src/config/game.ts`](src/config/game.ts)
 - **Generate Program** draws a six-round program (1200 m to 2200 m); each round enters 10 different horses in random lane order.
 - **Start / Pause / Resume** runs the rounds one after another on an animated ten-lane track.
 - After each round a result dialog lists the full finishing order with each horse's race time, keeps earlier rounds as collapsible sections titled with their winner, and offers **Next round** or **Finish**.
-- The **Results** panel collects the finishing order of every round that was run.
+- The **Results** panel collects the finishing order and race times of every round that was run.
 - **Playback speed** of 1x, 2x or 4x.
 - **Replayable races:** the page URL carries a seed (`?seed=42`). Reloading or sharing the link replays the same stable, program and race outcomes.
 - **Accessible:** keyboard operable, labelled regions, a focus-trapped result dialog, horse numbers on every color swatch (color is never the only cue) and reduced motion support.

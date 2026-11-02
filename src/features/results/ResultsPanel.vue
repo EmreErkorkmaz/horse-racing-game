@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /**
- * Panel listing the result of every finished round in finishing order.
+ * Panel listing the result of every finished round in finishing order, with
+ * each horse's finishing time.
  * New results are announced by the round result modal, not by this panel,
  * so assistive technology reads each result once.
  */
@@ -36,6 +37,7 @@ const tables = useResultTables(
       :key="table.round.index"
       :round="table.round"
       :entries="table.entries"
+      show-time
     />
   </PanelSection>
 </template>

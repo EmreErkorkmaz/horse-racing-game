@@ -3,14 +3,20 @@
  * Page grid of the game, filled through named slots:
  * `header`, `stable`, `track`, `program` and `results`.
  *
+ * Phones (below 768px, the base styles): one column; the track stays on top
+ * and the horse list, program and results sit behind tabs, one panel at a
+ * time. The breakpoint lives only in the CSS: the inactive panels stay mounted
+ * and are hidden there, so their scroll positions survive a tab switch.
+ * Tablets (768px to 1023px): the track, then program | results, then the horse
+ * list.
+ * Medium screens (1024px and up): the track on top, horse list | program |
+ * results below.
  * Wide screens (1440px and up): horse list | track | program | results.
- * Medium screens (768px and up): the track spans the first row, the three
- * panels share the second. Below 1440px four columns would leave the Program
- * and Results tables too narrow for a horse name on one line.
- * Narrow screens (below 768px, the base styles): one column; the track stays
- * on top and the horse list, program and results sit behind tabs, one panel at
- * a time. The breakpoint lives only in the CSS: the inactive panels stay
- * mounted and are hidden there, so their scroll positions survive a tab switch.
+ * Four columns need 1440px; below that the program and results tables would
+ * be too narrow for a horse name on one line.
+ *
+ * The horse list comes before the rounds in DOM order, as on medium and wide
+ * screens and in the phone tabs; only the tablet grid shows it below them.
  *
  * Program and Results sit in one scroll container, so their rounds stay side
  * by side while scrolling. On narrow screens the page stays one screen tall:
@@ -150,10 +156,16 @@ function panelAttrs(id: PanelId) {
     display: grid;
     gap: 1rem;
     padding: 1rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /*
+     * Up to 1023px the program and results share the row and the horse list
+     * goes below them: in three columns a results table with times does not
+     * fit and its names would wrap, breaking the round-by-round alignment.
+     */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
-      'track track track'
-      'stable program results';
+      'track track'
+      'program results'
+      'stable stable';
   }
 
   /* Every panel shows again, whichever tab is selected. */
@@ -198,6 +210,16 @@ function panelAttrs(id: PanelId) {
 
   .area-results {
     grid-area: auto / results;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    /* As on wide screens, no panel gets narrower than its table, whatever the font. */
+    grid-template-columns: repeat(3, minmax(max-content, 1fr));
+    grid-template-areas:
+      'track track track'
+      'stable program results';
   }
 }
 
