@@ -10,10 +10,14 @@ import { useId } from 'vue'
 defineProps<{
   /** Visible heading of the panel. */
   title: string
+  /** The panel has nothing to list; the empty message replaces the content. */
+  isEmpty: boolean
+  /** Hint shown while the panel is empty. */
+  emptyMessage: string
 }>()
 
 defineSlots<{
-  /** Panel content, placed in the scrollable body. */
+  /** Panel content, placed in the scrollable body while the panel is not empty. */
   default(): unknown
 }>()
 
@@ -24,7 +28,8 @@ const headingId = useId()
   <section class="panel" :aria-labelledby="headingId">
     <h2 :id="headingId" class="panel-title">{{ title }}</h2>
     <div class="panel-body">
-      <slot />
+      <p v-if="isEmpty" class="empty">{{ emptyMessage }}</p>
+      <slot v-else />
     </div>
   </section>
 </template>
@@ -51,8 +56,7 @@ const headingId = useId()
   overflow: auto;
 }
 
-/* Empty-state hint rendered by the panels through the slot. */
-.panel-body :slotted(.empty) {
+.empty {
   margin: 0;
   padding: 0.75rem;
   color: var(--color-muted);

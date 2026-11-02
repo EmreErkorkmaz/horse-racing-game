@@ -26,15 +26,16 @@ const tables = useResultTables(
 </script>
 
 <template>
-  <PanelSection title="Results">
-    <template v-if="tables.length > 0">
-      <RoundTable
-        v-for="table in tables"
-        :key="table.round.index"
-        :round="table.round"
-        :entries="table.entries"
-      />
-    </template>
-    <p v-else class="empty">Results appear here as each round finishes.</p>
+  <PanelSection
+    title="Results"
+    :is-empty="tables.length === 0"
+    empty-message="Results appear here as each round finishes."
+  >
+    <RoundTable
+      v-for="table in tables"
+      :key="table.round.index"
+      :round="table.round"
+      :entries="table.entries"
+    />
   </PanelSection>
 </template>

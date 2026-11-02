@@ -35,16 +35,17 @@ const tables = computed(() =>
 </script>
 
 <template>
-  <PanelSection title="Program">
-    <template v-if="tables.length > 0">
-      <RoundTable
-        v-for="table in tables"
-        :key="table.round.index"
-        :round="table.round"
-        :entries="table.entries"
-        :current="table.round.index === currentRoundIndex"
-      />
-    </template>
-    <p v-else class="empty">Generate a program to see the rounds.</p>
+  <PanelSection
+    title="Program"
+    :is-empty="tables.length === 0"
+    empty-message="Generate a program to see the rounds."
+  >
+    <RoundTable
+      v-for="table in tables"
+      :key="table.round.index"
+      :round="table.round"
+      :entries="table.entries"
+      :current="table.round.index === currentRoundIndex"
+    />
   </PanelSection>
 </template>

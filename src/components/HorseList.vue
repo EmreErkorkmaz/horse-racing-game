@@ -18,8 +18,8 @@ const title = computed(() =>
 </script>
 
 <template>
-  <PanelSection :title="title">
-    <table v-if="horses.length > 0">
+  <PanelSection :title="title" :is-empty="horses.length === 0" empty-message="No horses yet.">
+    <table>
       <thead>
         <tr>
           <th scope="col" class="num">#</th>
@@ -39,7 +39,6 @@ const title = computed(() =>
         </tr>
       </tbody>
     </table>
-    <p v-else class="empty">No horses yet.</p>
   </PanelSection>
 </template>
 
