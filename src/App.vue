@@ -7,7 +7,6 @@
  * `progress` is read only inside the `#track` slot, so a frame re-renders the
  * track and not the whole page.
  */
-import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useGameStore } from '@/stores/game'
 import { useRaceLoop } from '@/composables/useRaceLoop'
@@ -32,6 +31,8 @@ const {
   currentRoundIndex,
   progress,
   isLastRound,
+  isRunning,
+  awaitsRoundChoice,
 } = storeToRefs(store)
 
 const { seed, url } = resolveUrlSeed(
@@ -41,8 +42,7 @@ const { seed, url } = resolveUrlSeed(
 window.history.replaceState(window.history.state, '', url)
 store.init(seed)
 
-const running = computed(() => status.value === 'running')
-useRaceLoop(running, store.tick)
+useRaceLoop(isRunning, store.tick)
 </script>
 
 <template>
@@ -59,7 +59,7 @@ useRaceLoop(running, store.tick)
       />
     </template>
     <template #track>
-      <RaceTrack :round="currentRound" :horses="horses" :progress="progress" :running="running" />
+      <RaceTrack :round="currentRound" :horses="horses" :progress="progress" :running="isRunning" />
     </template>
     <template #horses>
       <HorseList :horses="horses" />
@@ -73,7 +73,7 @@ useRaceLoop(running, store.tick)
   </GameLayout>
 
   <RoundResultModal
-    :open="status === 'roundFinished'"
+    :open="awaitsRoundChoice"
     :rounds="program"
     :results="results"
     :horses="horses"

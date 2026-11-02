@@ -1,6 +1,13 @@
 import { computed, ref, shallowRef } from 'vue'
 import { defineStore } from 'pinia'
 import { GAME_CONFIG, type SpeedMultiplier } from '@/config/game'
+import {
+  canChangeHorseCount,
+  canGenerate,
+  canToggle,
+  isAwaitingRoundChoice,
+  isRaceRunning,
+} from '@/domain/gameRules'
 import { generateHorses } from '@/domain/horses'
 import { generateProgram } from '@/domain/program'
 import { createRace, isRaceFinished, rankRace, stepRace, type RaceState } from '@/domain/race'
@@ -44,6 +51,12 @@ export const useGameStore = defineStore('game', () => {
 
   const horseCount = computed(() => horses.value.length)
 
+  /** The race clock is running. */
+  const isRunning = computed(() => isRaceRunning(status.value))
+
+  /** A round has ended and the next round or the finish must be chosen. */
+  const awaitsRoundChoice = computed(() => isAwaitingRoundChoice(status.value))
+
   /** The round on the track: the active one, or the first one before the start. */
   const currentRound = computed<Round | null>(
     () => program.value[currentRoundIndex.value ?? 0] ?? null,
@@ -85,7 +98,7 @@ export const useGameStore = defineStore('game', () => {
 
   /** Replaces the stable with `count` new horses and drops the program. */
   function setHorseCount(count: number): void {
-    if (status.value !== 'idle' && status.value !== 'ready' && status.value !== 'finished') return
+    if (!canChangeHorseCount(status.value)) return
     resetProgram()
     horses.value = generateHorses(count, rng)
     status.value = 'idle'
@@ -93,7 +106,7 @@ export const useGameStore = defineStore('game', () => {
 
   /** Draws a new program for the current stable; any race in progress is dropped. */
   function generate(): void {
-    if (status.value === 'running' || status.value === 'roundFinished') return
+    if (!canGenerate(status.value)) return
     resetProgram()
     program.value = generateProgram(horses.value, rng)
     status.value = 'ready'
@@ -101,6 +114,7 @@ export const useGameStore = defineStore('game', () => {
 
   /** Start, pause or resume, depending on the current status. */
   function toggle(): void {
+    if (!canToggle(status.value)) return
     if (status.value === 'ready') startRound(0)
     else if (status.value === 'running') status.value = 'paused'
     else if (status.value === 'paused') status.value = 'running'
@@ -119,7 +133,7 @@ export const useGameStore = defineStore('game', () => {
    * waits for `nextRound` or `finish`.
    */
   function tick(realMs: number): void {
-    if (status.value !== 'running' || !race.value) return
+    if (!isRunning.value || !race.value) return
     const { stepMs, timeScale } = GAME_CONFIG.race
     pendingMs += realMs * timeScale * speed.value
 
@@ -142,13 +156,13 @@ export const useGameStore = defineStore('game', () => {
 
   /** Starts the following round of the program. */
   function nextRound(): void {
-    if (status.value !== 'roundFinished' || isLastRound.value) return
+    if (!awaitsRoundChoice.value || isLastRound.value) return
     startRound((currentRoundIndex.value ?? 0) + 1)
   }
 
   /** Ends the program after the current round; remaining rounds are not run. */
   function finish(): void {
-    if (status.value !== 'roundFinished') return
+    if (!awaitsRoundChoice.value) return
     status.value = 'finished'
   }
 
@@ -160,6 +174,8 @@ export const useGameStore = defineStore('game', () => {
     results,
     currentRoundIndex,
     horseCount,
+    isRunning,
+    awaitsRoundChoice,
     currentRound,
     progress,
     lastResult,

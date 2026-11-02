@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  awaitsRoundChoice,
+  isAwaitingRoundChoice,
   canChangeHorseCount,
   canGenerate,
   canToggle,
@@ -31,7 +31,7 @@ describe('game rules', () => {
       generate: canGenerate(status),
       toggle: canToggle(status),
       running: isRaceRunning(status),
-      choice: awaitsRoundChoice(status),
+      choice: isAwaitingRoundChoice(status),
     }).toEqual(expected)
   })
 })

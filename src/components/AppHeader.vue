@@ -9,6 +9,7 @@
  */
 import { computed, useId } from 'vue'
 import { GAME_CONFIG, type SpeedMultiplier } from '@/config/game'
+import { canChangeHorseCount, canGenerate, canToggle } from '@/domain/gameRules'
 import type { GameStatus } from '@/domain/types'
 
 const props = defineProps<{
@@ -33,19 +34,10 @@ const emit = defineEmits<{
 
 const countId = useId()
 
-/** A round is on the track: moving, stopped, or just finished and awaiting the next step. */
-const raceInProgress = computed(
-  () => props.status === 'running' || props.status === 'paused' || props.status === 'roundFinished',
-)
-
-const toggleDisabled = computed(
-  () => props.status === 'idle' || props.status === 'roundFinished' || props.status === 'finished',
-)
-
-/** A new program cannot be drawn while horses move or while the round result awaits a choice. */
-const generateDisabled = computed(
-  () => props.status === 'running' || props.status === 'roundFinished',
-)
+/** Each control follows the shared status rules, so the header never offers an action the store ignores. */
+const countDisabled = computed(() => !canChangeHorseCount(props.status))
+const generateDisabled = computed(() => !canGenerate(props.status))
+const toggleDisabled = computed(() => !canToggle(props.status))
 
 const toggleLabel = computed(() => {
   if (props.status === 'running') return 'Pause'
@@ -82,7 +74,7 @@ function onCountChange(event: Event) {
           :min="GAME_CONFIG.minHorseCount"
           :max="GAME_CONFIG.maxHorseCount"
           :value="horseCount"
-          :disabled="raceInProgress"
+          :disabled="countDisabled"
           @change="onCountChange"
         />
       </div>
