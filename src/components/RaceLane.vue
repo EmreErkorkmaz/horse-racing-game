@@ -93,6 +93,8 @@ defineProps<{
   width: calc(100% - var(--horse-width));
   pointer-events: none;
   will-change: transform;
+  /* Own stacking context, so the shadow's negative z-index stays inside the runner. */
+  isolation: isolate;
 }
 
 .horse {
@@ -115,7 +117,7 @@ defineProps<{
   text-shadow: var(--shadow-on-silk);
 }
 
-/* Ground shadow under the hooves; painted behind the horse inside the runner layer. */
+/* Ground shadow under the hooves; z-index -1 paints it behind the horse, within the runner. */
 .runner-shadow {
   position: absolute;
   z-index: -1;
