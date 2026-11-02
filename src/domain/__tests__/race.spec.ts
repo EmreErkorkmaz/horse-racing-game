@@ -101,6 +101,12 @@ describe('stepRace', () => {
     expect(stepRace(state, steadyRng).lanes[0]).toEqual(state.lanes[0])
   })
 
+  it('rejects a lane whose horse has no pace', () => {
+    const start = createRace(round(1200, [7]), [horse(7, 50)], steadyRng)
+    const withoutPace: RaceState = { ...start, paces: new Map() }
+    expect(() => stepRace(withoutPace, steadyRng)).toThrow(/7/)
+  })
+
   it('is deterministic for the same seed', () => {
     const horses = [horse(1, 30), horse(2, 60), horse(3, 90)]
     const run = (seed: number) => {
