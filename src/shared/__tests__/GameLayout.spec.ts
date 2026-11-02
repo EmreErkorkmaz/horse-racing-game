@@ -4,7 +4,7 @@ import GameLayout from '../GameLayout.vue'
 
 const slots = {
   header: '<div id="h">header</div>',
-  horses: '<div id="l">horses</div>',
+  stable: '<div id="l">stable</div>',
   track: '<div id="t">track</div>',
   program: '<div id="p">program</div>',
   results: '<div id="r">results</div>',
@@ -14,7 +14,7 @@ describe('GameLayout', () => {
   it('places every slot into its own grid area', () => {
     const w = mount(GameLayout, { slots })
     expect(w.find('.area-header #h').exists()).toBe(true)
-    expect(w.find('.area-horses #l').exists()).toBe(true)
+    expect(w.find('.area-stable #l').exists()).toBe(true)
     expect(w.find('.area-track #t').exists()).toBe(true)
     expect(w.find('.area-program #p').exists()).toBe(true)
     expect(w.find('.area-results #r').exists()).toBe(true)
@@ -29,6 +29,6 @@ describe('GameLayout', () => {
   it('keeps the track before the side panels in DOM order for keyboard and screen readers', () => {
     const w = mount(GameLayout, { slots })
     const order = w.findAll('main > *').map((el) => el.classes().find((c) => c.startsWith('area-')))
-    expect(order).toEqual(['area-track', 'area-horses', 'area-program', 'area-results'])
+    expect(order).toEqual(['area-track', 'area-stable', 'area-program', 'area-results'])
   })
 })
