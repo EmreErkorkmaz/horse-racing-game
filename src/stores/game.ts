@@ -52,9 +52,7 @@ export const useGameStore = defineStore('game', () => {
   /** Live lane positions of the current round; empty before the start. */
   const progress = computed<LaneProgress[]>(() => race.value?.lanes ?? [])
 
-  const lastResult = computed<RoundResult | null>(
-    () => results.value[results.value.length - 1] ?? null,
-  )
+  const lastResult = computed<RoundResult | null>(() => results.value.at(-1) ?? null)
 
   const isLastRound = computed(
     () => currentRoundIndex.value === program.value.length - 1 && program.value.length > 0,

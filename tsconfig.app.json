@@ -3,6 +3,10 @@
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
+    // Modern built-ins such as Array.prototype.at and toSorted; Vite's default
+    // build target (baseline widely available browsers) supports them natively.
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+
     // Extra safety for array and object lookups, but may have false positives.
     "noUncheckedIndexedAccess": true,
 
