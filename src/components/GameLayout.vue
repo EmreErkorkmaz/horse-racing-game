@@ -3,8 +3,10 @@
  * Page grid of the game, filled through named slots:
  * `header`, `horses`, `track`, `program` and `results`.
  *
- * Wide screens: horse list | track | program | results.
- * Medium screens: the track spans the first row, the three panels share the second.
+ * Wide screens (1440px and up): horse list | track | program | results.
+ * Medium screens (768px and up): the track spans the first row, the three
+ * panels share the second. Below 1440px four columns would leave the Program
+ * and Results tables too narrow for a horse name on one line.
  * Narrow screens: one column (track, results, program, horse list).
  *
  * The track comes first in DOM order so keyboard and screen reader users
@@ -94,7 +96,7 @@ defineSlots<{
 }
 
 /* Wide screens: all four columns fit the viewport, each panel scrolls on its own. */
-@media (min-width: 1280px) {
+@media (min-width: 1440px) {
   .layout {
     height: 100vh;
     height: 100dvh;
