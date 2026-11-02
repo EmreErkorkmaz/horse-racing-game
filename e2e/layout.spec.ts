@@ -29,12 +29,15 @@ for (const width of [375, 768, 1280, 1440]) {
  * System fonts differ between platforms (Linux runners render system-ui wider
  * than macOS), so the check also runs with a deliberately wide font.
  */
+/** Both edges of the two-column tablet layout, the three-column laptop layout and four columns. */
+const ONE_LINE_WIDTHS = [768, 1023, 1024, 1280, 1440]
+
 const fonts = [
   { name: 'the system font', css: '/* no override */' },
   { name: 'a wide font', css: 'body { font-family: Verdana, "DejaVu Sans", sans-serif; }' },
 ]
 
-for (const width of [1280, 1440]) {
+for (const width of ONE_LINE_WIDTHS) {
   for (const font of fonts) {
     test(`fits every horse name of the program on one line at ${width}px with ${font.name}`, async ({
       page,
@@ -53,7 +56,7 @@ for (const width of [1280, 1440]) {
   }
 }
 
-for (const width of [1280, 1440]) {
+for (const width of ONE_LINE_WIDTHS) {
   for (const font of fonts) {
     test(`fits every result row, with its time, on one line at ${width}px with ${font.name}`, async ({
       page,
