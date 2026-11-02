@@ -3,6 +3,7 @@ import { GAME_CONFIG } from '../src/config/game'
 import {
   expectRoundModal,
   generateButton,
+  horseCountInput,
   horseListPanel,
   modal,
   modalRows,
@@ -124,7 +125,7 @@ test.describe('seed in the URL', () => {
 test('races a smaller stable with every horse in each round', async ({ page }) => {
   const SMALL_STABLE = 5
   await page.goto(SEEDED_URL)
-  const count = page.getByLabel('Horses')
+  const count = horseCountInput(page)
   await count.fill(String(SMALL_STABLE))
   await count.press('Enter')
 

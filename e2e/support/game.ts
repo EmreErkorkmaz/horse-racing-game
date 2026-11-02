@@ -36,6 +36,8 @@ export const resultsPanel = (page: Page) => page.getByRole('region', { name: 'Re
 export const trackLabel = (page: Page) =>
   page.getByRole('region', { name: 'Race track' }).getByRole('heading', { level: 2 })
 export const runners = (page: Page) => page.locator('[data-test="runner"]')
+/** The horse count field; a role is needed because the phone panel tab is also named Horses. */
+export const horseCountInput = (page: Page) => page.getByRole('spinbutton', { name: 'Horses' })
 
 /** Generates a program at the given playback speed and starts the first round. */
 export async function startGame(page: Page, speed: '1x' | '2x' | '4x' = '4x') {
