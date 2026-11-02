@@ -176,6 +176,9 @@ function panelAttrs(id: PanelId) {
    * page grid and reuses them through subgrid, so each panel keeps exactly the
    * width it would have on its own. Each panel is as tall as its content, so a
    * short Results panel does not stretch to the Program.
+   *
+   * `.main >` raises the specificity to (0,2,0), so this beats the phone hide
+   * rule above; keep it on every wider-screen `.area-rounds` rule.
    */
   .main > .area-rounds {
     display: grid;
