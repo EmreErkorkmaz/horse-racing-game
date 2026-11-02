@@ -64,13 +64,16 @@ export function createRace(round: Round, horses: readonly Horse[], rng: Rng): Ra
  * Each running horse moves at its pace plus a small per-step variation. A
  * horse that crosses the line gets the exact crossing time within the step,
  * so two horses finishing in the same step are still told apart.
+ *
+ * @throws Error when a running lane has no pace, which `createRace` never produces.
  */
 export function stepRace(state: RaceState, rng: Rng): RaceState {
   const { stepMs, speedJitter } = GAME_CONFIG.race
   const lanes = state.lanes.map((lane) => {
     if (lane.finishTime !== null) return lane
 
-    const pace = state.paces.get(lane.horseId) ?? 0
+    const pace = state.paces.get(lane.horseId)
+    if (pace === undefined) throw new Error(`Horse ${lane.horseId} is running without a pace`)
     const speed = Math.max(0, pace + spread(rng, speedJitter))
     const covered = lane.covered + (speed * stepMs) / 1000
     if (covered < state.distance) return { ...lane, covered }
