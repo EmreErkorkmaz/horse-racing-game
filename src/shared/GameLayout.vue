@@ -3,15 +3,20 @@
  * Page grid of the game, filled through named slots:
  * `header`, `stable`, `track`, `program` and `results`.
  *
+ * Phones (below 768px, the base styles): one column; the track stays on top
+ * and the horse list, program and results sit behind tabs, one panel at a
+ * time. The breakpoint lives only in the CSS: the inactive panels stay mounted
+ * and are hidden there, so their scroll positions survive a tab switch.
+ * Tablets (768px to 1023px): the track, then program | results, then the horse
+ * list.
+ * Medium screens (1024px and up): the track on top, horse list | program |
+ * results below.
  * Wide screens (1440px and up): horse list | track | program | results.
- * Medium screens (1024px and up): the track spans the first row, the three
- * panels share the second. Tablets (768px to 1023px): the track, then the
- * program and results side by side, then the horse list. Below 1440px four columns would leave the Program
- * and Results tables too narrow for a horse name on one line.
- * Narrow screens (below 768px, the base styles): one column; the track stays
- * on top and the horse list, program and results sit behind tabs, one panel at
- * a time. The breakpoint lives only in the CSS: the inactive panels stay
- * mounted and are hidden there, so their scroll positions survive a tab switch.
+ * Four columns need 1440px; below that the program and results tables would
+ * be too narrow for a horse name on one line.
+ *
+ * The horse list comes before the rounds in DOM order, as on medium and wide
+ * screens and in the phone tabs; only the tablet grid shows it below them.
  *
  * Program and Results sit in one scroll container, so their rounds stay side
  * by side while scrolling. On narrow screens the page stays one screen tall:
