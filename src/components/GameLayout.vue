@@ -103,10 +103,10 @@ defineSlots<{
   .main {
     flex: 1;
     min-height: 0;
-    grid-template-columns: minmax(19rem, 1.2fr) minmax(0, 2.4fr) minmax(12rem, 1fr) minmax(
-        12rem,
-        1fr
-      );
+    /* The horse list column never gets narrower than its table, so no column is hidden. */
+    grid-template-columns:
+      minmax(max-content, 1.2fr) minmax(0, 2.4fr) minmax(12rem, 1fr)
+      minmax(12rem, 1fr);
     grid-template-rows: minmax(0, 1fr);
     grid-template-areas: 'horses track program results';
     align-items: start;
