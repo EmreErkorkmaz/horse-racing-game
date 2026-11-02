@@ -13,7 +13,7 @@ The numbers below are the defaults in [`src/config/game.ts`](src/config/game.ts)
 - A stable of up to 20 horses, each with a unique name, a unique color and a condition score from 1 to 100.
 - **Generate Program** draws a six-round program (1200 m to 2200 m); each round enters 10 different horses in random lane order.
 - **Start / Pause / Resume** runs the rounds one after another on an animated ten-lane track.
-- After each round a result dialog lists the full finishing order, keeps earlier rounds as collapsible sections titled with their winner, and offers **Next round** or **Finish**.
+- After each round a result dialog lists the full finishing order with each horse's race time, keeps earlier rounds as collapsible sections titled with their winner, and offers **Next round** or **Finish**.
 - The **Results** panel collects the finishing order of every round that was run.
 - **Playback speed** of 1x, 2x or 4x.
 - **Replayable races:** the page URL carries a seed (`?seed=42`). Reloading or sharing the link replays the same stable, program and race outcomes.
@@ -100,7 +100,7 @@ npm run lint         # lint and auto-fix (rewrites files)
 
 The first end-to-end run needs a browser: `npx playwright install chromium`.
 
-Visual tests run inside the official Playwright Docker image, so screenshots render the same on every machine and in CI. They need Docker; the first run pulls the image and takes a few minutes. After an intended UI change, refresh the baselines with `npm run test:visual -- --update-snapshots`.
+Visual tests run inside the official Playwright Docker image, so screenshots render the same on every machine and in CI. They need Docker and run as linux/amd64 to match CI, so the first run (image pull and install, emulated on Apple Silicon) takes several minutes. After an intended UI change, refresh the baselines with `npm run test:visual -- --update-snapshots`.
 
 ## Continuous integration and deployment
 
