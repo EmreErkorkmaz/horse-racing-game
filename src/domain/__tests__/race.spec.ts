@@ -56,9 +56,7 @@ describe('createRace', () => {
 
   it('draws a form of the day that shifts the pace by at most the form range', () => {
     const state = createRace(round(1200, [1]), [horse(1, 1)], lowestRng)
-    expect(stepRace(state, steadyRng).lanes[0]?.covered).toBeCloseTo(
-      perStep(baseSpeed - formRange),
-    )
+    expect(stepRace(state, steadyRng).lanes[0]?.covered).toBeCloseTo(perStep(baseSpeed - formRange))
   })
 
   it('rejects a round that enters a horse missing from the stable', () => {
