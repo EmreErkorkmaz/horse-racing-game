@@ -63,6 +63,16 @@ test('pauses and resumes the race', async ({ page }) => {
   await expect.poll(() => runnerPositions(page)).not.toEqual(paused)
 })
 
+test('speeds up the gallop together with the playback speed', async ({ page }) => {
+  await page.goto(SEEDED_URL)
+  const track = page.getByRole('region', { name: 'Race track' }).locator('.track')
+  const speedVariable = () =>
+    track.evaluate((element) => (element as HTMLElement).style.getPropertyValue('--speed'))
+  expect(await speedVariable()).toBe('1')
+  await page.getByLabel('4x').check()
+  await expect.poll(speedVariable).toBe('4')
+})
+
 test('keeps the round modal open on Escape and works from the keyboard', async ({ page }) => {
   await page.goto(SEEDED_URL)
   await startGame(page)

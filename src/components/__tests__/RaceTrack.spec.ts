@@ -21,6 +21,13 @@ describe('RaceTrack', () => {
     )
   })
 
+  it('passes the playback speed to the gallop as a CSS variable', () => {
+    const track = (speed?: 1 | 2 | 4) =>
+      mount(RaceTrack, { props: { round, horses, progress, speed } }).get<HTMLElement>('.track')
+    expect(track().element.style.getPropertyValue('--speed')).toBe('1')
+    expect(track(4).element.style.getPropertyValue('--speed')).toBe('4')
+  })
+
   it('labels the track with the round', () => {
     const w = mount(RaceTrack, { props: { round, horses, progress } })
     expect(w.get('.track-label').text()).toBe('Round 1 - 1200m')

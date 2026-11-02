@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import RaceLane from '../RaceLane.vue'
 import HorseIcon from '../HorseIcon.vue'
+import { gallopPhase } from '../gallop'
 import { horses } from './fixtures'
 
 const horse = horses[0]!
@@ -40,6 +41,17 @@ describe('RaceLane', () => {
     const w = mountLane(0.25)
     await w.setProps({ fraction: 0.75 })
     expect(w.get<HTMLElement>('.runner').element.style.transform).toBe('translateX(75%)')
+  })
+
+  it('gives the runner its own gallop phase, so horses do not bob in unison', () => {
+    const runner = mountLane(0.5).get<HTMLElement>('.runner')
+    expect(runner.element.style.getPropertyValue('--gallop-phase')).toBe(
+      String(gallopPhase(horse.id)),
+    )
+  })
+
+  it('draws one ground shadow under the runner', () => {
+    expect(mountLane(0.5).get('.runner').findAll('[data-test="runner-shadow"]')).toHaveLength(1)
   })
 
   it('marks a finished runner', () => {
