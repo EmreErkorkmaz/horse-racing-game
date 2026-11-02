@@ -9,7 +9,10 @@ for (const width of [1280, 1440, 1920]) {
   test(`shows every Horse List column without scrolling at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/?seed=1')
-    expect(await overflowOf(page, '.area-horses .panel-body')).toBe(0)
+    const panel = page.getByRole('region', { name: /Horse List/ })
+    const panelBox = await panel.boundingBox()
+    const tableBox = await panel.getByRole('table').boundingBox()
+    expect(tableBox!.x + tableBox!.width).toBeLessThanOrEqual(panelBox!.x + panelBox!.width)
   })
 }
 
