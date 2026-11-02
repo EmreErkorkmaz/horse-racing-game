@@ -33,7 +33,10 @@ describe('ResultsPanel', () => {
       },
     ]
     const w = mount(ResultsPanel, { props: { rounds, results: unsorted, horses } })
-    const positions = w.getComponent(RoundTable).props('entries').map((e) => e.position)
+    const positions = w
+      .getComponent(RoundTable)
+      .props('entries')
+      .map((e) => e.position)
     expect(positions).toEqual([1, 2])
   })
 
@@ -54,7 +57,9 @@ describe('ResultsPanel', () => {
     await w.setProps({
       results: [...results, { roundIndex: 1, placements: [{ position: 1, horseId: 2 }] }],
     })
-    expect(w.get('[aria-live="polite"]').text()).toBe('Round 2 - 1400m finished. Winner: Grace Hopper.')
+    expect(w.get('[aria-live="polite"]').text()).toBe(
+      'Round 2 - 1400m finished. Winner: Grace Hopper.',
+    )
     expect(w.findAllComponents(RoundTable)).toHaveLength(2)
   })
 })

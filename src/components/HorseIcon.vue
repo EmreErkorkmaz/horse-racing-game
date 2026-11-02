@@ -12,7 +12,13 @@ defineProps<{
 </script>
 
 <template>
-  <svg class="horse-icon" viewBox="0 0 64 40" aria-hidden="true" focusable="false" :style="{ color }">
+  <svg
+    class="horse-icon"
+    viewBox="0 0 64 40"
+    aria-hidden="true"
+    focusable="false"
+    :style="{ color }"
+  >
     <use :href="`#${HORSE_SYMBOL_ID}`" />
   </svg>
 </template>

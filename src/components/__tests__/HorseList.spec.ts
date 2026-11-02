@@ -27,7 +27,12 @@ describe('HorseList', () => {
 
   it('has column headers', () => {
     const w = mount(HorseList, { props: { horses } })
-    expect(w.findAll('thead th').map((th) => th.text())).toEqual(['#', 'Name', 'Condition', 'Color'])
+    expect(w.findAll('thead th').map((th) => th.text())).toEqual([
+      '#',
+      'Name',
+      'Condition',
+      'Color',
+    ])
   })
 
   it('shows an empty state without horses', () => {

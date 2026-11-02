@@ -10,7 +10,8 @@ function mountHeader(status: GameStatus, horseCount = 20, speed = 1) {
 
 const startButton = (w: ReturnType<typeof mountHeader>) => w.get('[data-test="toggle"]')
 const generateButton = (w: ReturnType<typeof mountHeader>) => w.get('[data-test="generate"]')
-const countInput = (w: ReturnType<typeof mountHeader>) => w.get<HTMLInputElement>('[data-test="horse-count"]')
+const countInput = (w: ReturnType<typeof mountHeader>) =>
+  w.get<HTMLInputElement>('[data-test="horse-count"]')
 
 describe('AppHeader', () => {
   it('renders the title', () => {

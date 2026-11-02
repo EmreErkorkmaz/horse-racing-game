@@ -23,9 +23,15 @@ withDefaults(
 </script>
 
 <template>
-  <table class="round-table" :class="{ 'is-current': current }" :aria-current="current ? 'step' : undefined">
+  <table
+    class="round-table"
+    :class="{ 'is-current': current }"
+    :aria-current="current ? 'step' : undefined"
+  >
     <caption>
-      {{ roundLabel(round) }}
+      {{
+        roundLabel(round)
+      }}
     </caption>
     <thead>
       <tr>

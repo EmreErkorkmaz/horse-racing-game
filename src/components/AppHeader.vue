@@ -80,7 +80,11 @@ function onCountChange(event: Event) {
 
       <fieldset class="speed">
         <legend>Speed</legend>
-        <label v-for="multiplier in GAME_CONFIG.speedMultipliers" :key="multiplier" class="speed-option">
+        <label
+          v-for="multiplier in GAME_CONFIG.speedMultipliers"
+          :key="multiplier"
+          class="speed-option"
+        >
           <input
             type="radio"
             name="speed"
@@ -150,7 +154,14 @@ function onCountChange(event: Event) {
   padding: 0.375rem 0.5rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
   font: inherit;
+}
+
+.field input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .speed {

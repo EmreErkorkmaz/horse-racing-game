@@ -77,7 +77,7 @@ table {
 
 th,
 td {
-  padding: 0.3125rem 0.75rem;
+  padding: 0.3125rem 0.5rem;
   border-bottom: 1px solid var(--color-border);
   text-align: left;
   white-space: nowrap;
