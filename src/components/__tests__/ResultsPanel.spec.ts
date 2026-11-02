@@ -40,26 +40,21 @@ describe('ResultsPanel', () => {
     expect(positions).toEqual([1, 2])
   })
 
-  it('announces the latest result through a polite live region', () => {
+  it('leaves result announcements to the round result modal', () => {
     const w = mount(ResultsPanel, { props: { rounds, results, horses } })
-    const live = w.get('[aria-live="polite"]')
-    expect(live.text()).toBe('Round 1 - 1200m finished. Winner: Linus Torvalds.')
+    expect(w.find('[aria-live]').exists()).toBe(false)
   })
 
-  it('keeps the live region empty before any result', () => {
+  it('shows a hint before any result', () => {
     const w = mount(ResultsPanel, { props: { rounds, results: [], horses } })
-    expect(w.get('[aria-live="polite"]').text()).toBe('')
     expect(w.text()).toContain('Results appear here')
   })
 
-  it('updates the announcement when a new result arrives', async () => {
+  it('adds a table when a new result arrives', async () => {
     const w = mount(ResultsPanel, { props: { rounds, results, horses } })
     await w.setProps({
       results: [...results, { roundIndex: 1, placements: [{ position: 1, horseId: 2 }] }],
     })
-    expect(w.get('[aria-live="polite"]').text()).toBe(
-      'Round 2 - 1400m finished. Winner: Grace Hopper.',
-    )
     expect(w.findAllComponents(RoundTable)).toHaveLength(2)
   })
 })
