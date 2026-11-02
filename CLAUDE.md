@@ -40,4 +40,5 @@ Rules:
 
 - `npm run test:unit` / `npm run test:watch`
 - `npm run test:e2e`
+- `npm run test:visual` (visual baselines in the Playwright Docker image; needs Docker; `-- --update-snapshots` after an intended UI change)
 - `npm run type-check`, `npm run lint`, `npm run build`
