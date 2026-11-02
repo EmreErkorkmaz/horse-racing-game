@@ -85,6 +85,8 @@ defineSlots<{
   grid-template-areas:
     'results'
     'program';
+  /* Each panel is as tall as its content; a short Results panel does not stretch to the Program. */
+  align-items: start;
   min-width: 0;
 }
 
@@ -102,7 +104,7 @@ defineSlots<{
   grid-area: results;
 }
 
-/* Both panels stretch to the row height, so their frames line up. */
+/* Each panel fills its column's width. */
 .area-program > :deep(*),
 .area-results > :deep(*) {
   flex: 1 1 auto;
