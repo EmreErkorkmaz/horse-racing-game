@@ -11,15 +11,15 @@ import {
 } from './support/game'
 
 /*
- * Phones show one side panel at a time behind tabs. The page stays one screen
- * tall and the active panel scrolls on its own. Wider screens keep every panel.
+ * Phones show one side panel at a time behind tabs. The page scrolls past the
+ * header and the track until the active panel fills the screen; long panels
+ * scroll inside. Wider screens keep every panel.
  */
 
 const PHONE = { width: 375, height: 740 }
 
 const tabList = (page: Page) => page.getByRole('tablist', { name: 'Panels' })
-const tab = (page: import('@playwright/test').Page, name: string) =>
-  tabList(page).getByRole('tab', { name })
+const tab = (page: Page, name: string) => tabList(page).getByRole('tab', { name })
 
 test('switches the phone panel with the game and on request', async ({ page }) => {
   await page.setViewportSize(PHONE)
@@ -50,33 +50,32 @@ test('switches the phone panel with the game and on request', async ({ page }) =
   await expect(resultsPanel(page)).toBeHidden()
 })
 
-test('keeps the phone page one screen tall and scrolls inside the active panel', async ({
-  page,
-}) => {
+test('lets the phone page scroll until the active panel fills the screen', async ({ page }) => {
   await page.setViewportSize(PHONE)
   await page.goto(SEEDED_URL)
   await generateButton(page).click()
   await expect(programPanel(page)).toBeVisible()
 
-  const pageOverflow = await page.evaluate(
-    () => document.documentElement.scrollHeight - window.innerHeight,
-  )
-  expect(pageOverflow).toBeLessThanOrEqual(0)
-
-  // Six rounds do not fit one screen, so the panel or a wrapper around it must scroll.
-  const panelScroll = await programPanel(page).evaluate((root) => {
-    const ancestors: Element[] = []
-    for (let el = root.parentElement; el && el !== document.body; el = el.parentElement) {
-      ancestors.push(el)
+  const { scrollable, pageHeight, visiblePanel } = await page.evaluate(() => {
+    window.scrollTo(0, document.documentElement.scrollHeight)
+    const program = [...document.querySelectorAll('section[aria-labelledby]')].find(
+      (section) =>
+        document.getElementById(section.getAttribute('aria-labelledby')!)?.textContent ===
+        'Program',
+    )!
+    const box = program.getBoundingClientRect()
+    return {
+      scrollable: document.documentElement.scrollHeight > window.innerHeight,
+      pageHeight: document.documentElement.scrollHeight,
+      visiblePanel: Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0),
     }
-    return Math.max(
-      0,
-      ...[root, ...root.querySelectorAll('*'), ...ancestors]
-        .filter((element) => ['auto', 'scroll'].includes(getComputedStyle(element).overflowY))
-        .map((element) => element.scrollHeight - element.clientHeight),
-    )
   })
-  expect(panelScroll).toBeGreaterThan(0)
+
+  // The page scrolls past the header and the track...
+  expect(scrollable).toBe(true)
+  // ...until the panel takes most of the screen, while six rounds still scroll inside it.
+  expect(visiblePanel).toBeGreaterThanOrEqual(PHONE.height * 0.7)
+  expect(pageHeight).toBeLessThanOrEqual(PHONE.height * 2)
 })
 
 for (const viewport of [
