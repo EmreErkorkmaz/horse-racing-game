@@ -17,7 +17,7 @@ export interface Horse {
   name: string
   /** Unique within a generated stable. */
   color: HorseColor
-  /** Fitness score between 1 and 100. Higher scores mean a faster average pace. */
+  /** Fitness score within `GAME_CONFIG.conditionRange`. Higher scores mean a faster average pace. */
   condition: number
 }
 

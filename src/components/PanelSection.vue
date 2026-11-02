@@ -1,0 +1,60 @@
+<script setup lang="ts">
+/**
+ * Titled side panel shared by the Horse List, Program and Results panels.
+ *
+ * The section is labelled by its heading, so assistive technology lists it
+ * as a named region. Only the body scrolls; the title stays in place.
+ */
+import { useId } from 'vue'
+
+defineProps<{
+  /** Visible heading of the panel. */
+  title: string
+}>()
+
+defineSlots<{
+  /** Panel content, placed in the scrollable body. */
+  default(): unknown
+}>()
+
+const headingId = useId()
+</script>
+
+<template>
+  <section class="panel" :aria-labelledby="headingId">
+    <h2 :id="headingId" class="panel-title">{{ title }}</h2>
+    <div class="panel-body">
+      <slot />
+    </div>
+  </section>
+</template>
+
+<style scoped>
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.panel-title {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 1rem;
+}
+
+.panel-body {
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Empty-state hint rendered by the panels through the slot. */
+.panel-body :slotted(.empty) {
+  margin: 0;
+  padding: 0.75rem;
+  color: var(--color-muted);
+}
+</style>

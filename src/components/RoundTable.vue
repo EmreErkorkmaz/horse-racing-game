@@ -60,7 +60,7 @@ withDefaults(
 caption {
   padding: 0.375rem 0.75rem;
   background: var(--color-surface-alt);
-  border-block: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   font-weight: 700;
   text-align: left;
 }
