@@ -15,12 +15,17 @@ export const SEED = 7
 /** App URL that loads the shared seed. */
 export const SEEDED_URL = `/?seed=${SEED}`
 
-/** Longest wait for one round to finish at 4x playback. */
+/*
+ * Waits allow at least three times the unloaded duration. A busy machine (a slow CI
+ * runner, the emulated visual container running alongside) delivers fewer
+ * animation frames, and the frame cap then slows the race in wall-clock time.
+ */
+/** Longest wait for one round to finish at 4x playback (about 3.5 s unloaded). */
 export const ROUND_TIMEOUT_4X = 15_000
-/** Longest wait for one round to finish at 1x playback. */
-export const ROUND_TIMEOUT_1X = 30_000
-/** Test budget for flows that run several rounds. */
-export const MULTI_ROUND_TEST_TIMEOUT = 60_000
+/** Longest wait for one round to finish at 1x playback (about 14 s unloaded). */
+export const ROUND_TIMEOUT_1X = 45_000
+/** Test budget for flows that run several rounds (about 21 s unloaded for six rounds at 4x). */
+export const MULTI_ROUND_TEST_TIMEOUT = 120_000
 
 export const generateButton = (page: Page) => page.getByRole('button', { name: 'Generate Program' })
 export const toggleButton = (page: Page) => page.locator('[data-test="toggle"]')
