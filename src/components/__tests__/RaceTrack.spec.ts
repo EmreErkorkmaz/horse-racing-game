@@ -15,7 +15,7 @@ describe('RaceTrack', () => {
   })
 
   it('tells how to race again once the program is finished', () => {
-    const w = mount(RaceTrack, { props: { round, horses, progress, finished: true } })
+    const w = mount(RaceTrack, { props: { round, horses, progress, programFinished: true } })
     expect(w.get('.track-label').text()).toBe(
       'Program finished. Generate a new program to race again.',
     )
