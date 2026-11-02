@@ -63,6 +63,8 @@ const headingId = useId()
 }
 
 .empty {
+  /* The hint wraps to the panel instead of widening a content-sized column. */
+  contain: inline-size;
   margin: 0;
   padding: 0.75rem;
   color: var(--color-muted);

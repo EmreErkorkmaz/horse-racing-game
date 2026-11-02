@@ -153,10 +153,14 @@ defineSlots<{
   .main {
     flex: 1;
     min-height: 0;
-    /* The horse list column never gets narrower than its table, so no column is hidden. */
+    /*
+     * The horse list, program and results columns never get narrower than
+     * their tables, so no column is hidden and no name wraps whatever font the
+     * system provides; the track takes the remaining width.
+     */
     grid-template-columns:
-      minmax(max-content, 1.2fr) minmax(0, 2.4fr) minmax(12rem, 1fr)
-      minmax(12rem, 1fr);
+      minmax(max-content, 1.2fr) minmax(0, 2.4fr) minmax(max-content, 1fr)
+      minmax(max-content, 1fr);
     grid-template-rows: minmax(0, 1fr);
     grid-template-areas: 'stable track program results';
     align-items: start;
