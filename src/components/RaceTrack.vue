@@ -37,13 +37,13 @@ const lanes = computed(() => {
   return round.horseIds.flatMap((id, i) => {
     const horse = horseById.value.get(id)
     if (!horse) return []
-    const lane = progressById.get(id)
+    const runner = progressById.get(id)
     return [
       {
-        lane: i + 1,
+        number: i + 1,
         horse,
-        fraction: lane ? toFraction(lane.covered, round.distance) : 0,
-        finished: lane?.finishTime != null,
+        fraction: runner ? toFraction(runner.covered, round.distance) : 0,
+        finished: runner?.finishTime != null,
       },
     ]
   })
@@ -58,7 +58,7 @@ const lanes = computed(() => {
         <RaceLane
           v-for="lane in lanes"
           :key="lane.horse.id"
-          :lane="lane.lane"
+          :lane="lane.number"
           :horse="lane.horse"
           :fraction="lane.fraction"
           :finished="lane.finished"
