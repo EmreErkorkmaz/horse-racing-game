@@ -18,7 +18,21 @@ export default defineConfig({
     baseURL: 'http://localhost:4173',
     trace: 'on-first-retry',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+      // Visual baselines need the Linux Docker image; `npm run test:e2e` runs anywhere.
+      testIgnore: '**/visual/**',
+    },
+    {
+      name: 'visual',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: 'visual/**/*.spec.ts',
+      // Baselines exist for Linux only, so the file name carries no platform suffix.
+      snapshotPathTemplate: '{testDir}/visual/baselines/{arg}{ext}',
+    },
+  ],
   webServer: {
     command: 'npm run build-only && npm run preview',
     port: 4173,

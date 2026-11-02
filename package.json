@@ -8,7 +8,8 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest run",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=chromium",
+    "test:visual": "docker run --rm --ipc=host -v \"$PWD\":/work -v /work/node_modules -w /work mcr.microsoft.com/playwright:v$(node -p \"require('@playwright/test/package.json').version\")-noble sh -c \"npm ci --no-audit --no-fund && npx playwright test --project=visual \\$*\" --",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "run-s \"lint:*\"",
@@ -22,7 +23,7 @@
     "vue": "^3.5.42"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "1.64.1",
     "@tsconfig/node24": "^24.0.5",
     "@types/jsdom": "^30.0.0",
     "@types/node": "^24.13.4",
