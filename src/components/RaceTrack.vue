@@ -26,15 +26,15 @@ const props = withDefaults(
     /** True while the race clock runs; drives the gallop animation only. */
     running?: boolean
     /** True once the program is over; the label then tells how to race again. */
-    finished?: boolean
+    programFinished?: boolean
   }>(),
-  { running: false, finished: false },
+  { running: false, programFinished: false },
 )
 
 const horseById = useHorseLookup(toRef(props, 'horses'))
 
 const label = computed(() => {
-  if (props.finished) return 'Program finished. Generate a new program to race again.'
+  if (props.programFinished) return 'Program finished. Generate a new program to race again.'
   if (props.round) return roundLabel(props.round)
   return 'Generate a program and press Start to begin the race.'
 })
