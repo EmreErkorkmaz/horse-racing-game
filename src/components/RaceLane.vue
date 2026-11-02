@@ -97,10 +97,8 @@ defineProps<{
   font-size: 0.625rem;
   font-weight: 700;
   line-height: 1;
-  color: #fff;
-  text-shadow:
-    0 0 2px #000,
-    0 0 2px #000;
+  color: var(--color-on-silk);
+  text-shadow: var(--shadow-on-silk);
 }
 
 /* Gallop bob while the race clock runs; transform-only, so it stays on the compositor. */

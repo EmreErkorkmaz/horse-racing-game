@@ -66,7 +66,7 @@ export const useGameStore = defineStore('game', () => {
   const lastResult = computed<RoundResult | null>(() => results.value.at(-1) ?? null)
 
   const isLastRound = computed(
-    () => currentRoundIndex.value === program.value.length - 1 && program.value.length > 0,
+    () => program.value.length > 0 && currentRoundIndex.value === program.value.length - 1,
   )
 
   function resetProgram(): void {

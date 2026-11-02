@@ -31,10 +31,7 @@ defineProps<{
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 1;
-  /* A white number with a dark halo stays readable on light and dark fills. */
-  color: #fff;
-  text-shadow:
-    0 0 2px #000,
-    0 0 2px #000;
+  color: var(--color-on-silk);
+  text-shadow: var(--shadow-on-silk);
 }
 </style>

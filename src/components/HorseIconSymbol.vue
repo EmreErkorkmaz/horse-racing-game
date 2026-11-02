@@ -1,14 +1,16 @@
 <script lang="ts">
-/** Element id of the shared horse `<symbol>`; HorseIcon references it with `<use>`. */
-export const HORSE_SYMBOL_ID = 'horse-shape'
-</script>
-
-<script setup lang="ts">
 /**
  * Hidden SVG sprite that defines the horse silhouette once per page.
  * Render it a single time (RaceTrack does); every HorseIcon reuses it,
  * so the path data is not repeated for each runner.
  */
+
+/** Element id of the shared horse `<symbol>`; HorseIcon references it with `<use>`. */
+export const HORSE_SYMBOL_ID = 'horse-shape'
+</script>
+
+<script setup lang="ts">
+// Intentionally empty: a setup block is what exposes HORSE_SYMBOL_ID above to the template.
 </script>
 
 <template>
