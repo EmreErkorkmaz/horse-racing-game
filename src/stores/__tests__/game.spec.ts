@@ -270,4 +270,12 @@ describe('status flags', () => {
     store.tick(LONG_TICK)
     expect([store.isRaceRunning, store.isAwaitingRoundChoice]).toEqual([false, true])
   })
+
+  it('report a finished program', () => {
+    const store = readyStore()
+    finishFirstRound(store)
+    expect(store.isProgramFinished).toBe(false)
+    store.finish()
+    expect(store.isProgramFinished).toBe(true)
+  })
 })

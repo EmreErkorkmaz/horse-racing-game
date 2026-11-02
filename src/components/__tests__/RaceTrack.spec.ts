@@ -14,6 +14,13 @@ describe('RaceTrack', () => {
     expect(w.get('.track-label').text()).toContain('Generate a program')
   })
 
+  it('tells how to race again once the program is finished', () => {
+    const w = mount(RaceTrack, { props: { round, horses, progress, finished: true } })
+    expect(w.get('.track-label').text()).toBe(
+      'Program finished. Generate a new program to race again.',
+    )
+  })
+
   it('labels the track with the round', () => {
     const w = mount(RaceTrack, { props: { round, horses, progress } })
     expect(w.get('.track-label').text()).toBe('Round 1 - 1200m')
