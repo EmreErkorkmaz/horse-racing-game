@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatRaceTime, roundLabel, toFraction } from '../format'
+import { formatFinishTime, formatRaceTime, roundLabel, toFraction } from '../format'
 
 describe('roundLabel', () => {
   it('uses a 1-based round number and the distance in meters', () => {
@@ -18,6 +18,17 @@ describe('formatRaceTime', () => {
   it('carries rounding over into the next second and minute', () => {
     expect(formatRaceTime(59996)).toBe('1:00.00')
     expect(formatRaceTime(9996)).toBe('0:10.00')
+  })
+})
+
+describe('formatFinishTime', () => {
+  it('formats a finishing time like formatRaceTime', () => {
+    expect(formatFinishTime(70530)).toBe(formatRaceTime(70530))
+  })
+
+  it('returns an empty string when there is no time', () => {
+    expect(formatFinishTime(null)).toBe('')
+    expect(formatFinishTime(undefined)).toBe('')
   })
 })
 
