@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import {
   expectRoundModal,
+  generateButton,
   modal,
   programPanel,
   resultsPanel,
@@ -45,6 +46,19 @@ function innerOverflow(region: Locator): Promise<number> {
   )
 }
 
+/** Height of `region` beyond what its own content needs, borders included; 0 means it does not stretch. */
+function extraHeight(region: Locator): Promise<number> {
+  return region.evaluate((element) => {
+    const content = [...element.children].reduce(
+      (sum, child) => sum + child.getBoundingClientRect().height,
+      0,
+    )
+    const { borderTopWidth, borderBottomWidth } = getComputedStyle(element)
+    const borders = parseFloat(borderTopWidth) + parseFloat(borderBottomWidth)
+    return Math.round(element.getBoundingClientRect().height - content - borders)
+  })
+}
+
 /** Top edge of the table captioned with the given round title inside `region`. */
 async function captionTop(region: Locator, title: string): Promise<number> {
   const box = await region.getByRole('table', { name: title }).boundingBox()
@@ -81,6 +95,16 @@ for (const viewport of [
       const programTop = await captionTop(programPanel(page), title)
       expect(await captionTop(resultsPanel(page), title)).toBeCloseTo(programTop, 0)
     }
+    expect(await extraHeight(resultsPanel(page))).toBe(0)
+  })
+
+  test(`keeps an empty Results panel only as tall as its hint at ${viewport.width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport)
+    await page.goto(SEEDED_URL)
+    await generateButton(page).click()
+    expect(await extraHeight(resultsPanel(page))).toBe(0)
   })
 }
 
