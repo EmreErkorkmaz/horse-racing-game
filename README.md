@@ -72,11 +72,12 @@ src/
 
 Development was test-first: new behavior lands as a failing `test:` commit followed by the commit that makes it pass.
 
-| Layer      | Tool                    | What it covers                                                                                                                                                           |
-| ---------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Unit       | Vitest                  | RNG, stable and program generation, race engine, status rules, store transitions, composables, URL seed                                                                  |
-| Component  | Vitest + Vue Test Utils | Every component's props, events, states and accessibility attributes                                                                                                     |
-| End to end | Playwright              | The full six-round flow, pause and resume, the keyboard-only dialog, seed replay at different speeds, URL seed rules, stable size, and layout overflow at 375 to 1920 px |
+| Layer      | Tool                                                           | What it covers                                                                                                                                                           |
+| ---------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Unit       | Vitest                                                         | RNG, stable and program generation, race engine, status rules, store transitions, composables, URL seed                                                                  |
+| Component  | Vitest + Vue Test Utils                                        | Every component's props, events, states and accessibility attributes                                                                                                     |
+| End to end | Playwright                                                     | The full six-round flow, pause and resume, the keyboard-only dialog, seed replay at different speeds, URL seed rules, stable size, and layout overflow at 375 to 1920 px |
+| Visual     | Playwright screenshots in the official Playwright Docker image | Initial, program, round result dialog and finished screens at 375, 1280 and 1440 px                                                                                      |
 
 ## Getting started
 
@@ -92,14 +93,17 @@ npm run preview      # serve the production build
 ```bash
 npm run test:unit    # unit and component tests
 npm run test:e2e     # end-to-end tests against the production build
+npm run test:visual  # screenshot comparison in Docker (same image as CI)
 npm run type-check
 npm run lint         # lint and auto-fix (rewrites files)
 ```
 
 The first end-to-end run needs a browser: `npx playwright install chromium`.
 
+Visual tests run inside the official Playwright Docker image, so screenshots render the same on every machine and in CI. They need Docker; the first run pulls the image and takes a few minutes. After an intended UI change, refresh the baselines with `npm run test:visual -- --update-snapshots`.
+
 ## Continuous integration and deployment
 
-- GitHub Actions runs lint, type-check, unit tests, the build and the end-to-end tests on every push and pull request.
+- GitHub Actions runs lint, type-check, unit tests, the build, the end-to-end tests and the visual tests (inside the Playwright image) on every push and pull request.
 - Every successful CI run for a push to `main` deploys the production build to Cloudflare Pages. Pull requests, including those from forks, never deploy.
 - Hashed assets are served with a one-year immutable cache.
