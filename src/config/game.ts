@@ -39,6 +39,12 @@ export const GAME_CONFIG = {
     stepMs: 100,
     /** Simulated milliseconds per real millisecond at 1x playback. */
     timeScale: 10,
+    /**
+     * Longest wall-clock gap between two animation frames that is passed on
+     * to the race. A longer gap (a tab returning from the background, a
+     * debugger pause) is cut to this value instead of jumping the race ahead.
+     */
+    maxFrameMs: 100,
   },
 } as const
 
