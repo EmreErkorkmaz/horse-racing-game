@@ -10,7 +10,7 @@
 import { storeToRefs } from 'pinia'
 import { useGameStore } from '@/stores/game'
 import { useRaceLoop } from '@/composables/useRaceLoop'
-import { resolveUrlSeed } from '@/composables/urlSeed'
+import { resolveUrlSeed } from '@/lib/urlSeed'
 import AppHeader from '@/components/AppHeader.vue'
 import GameLayout from '@/components/GameLayout.vue'
 import HorseList from '@/components/HorseList.vue'

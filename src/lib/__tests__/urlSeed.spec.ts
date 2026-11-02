@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseSeed, resolveUrlSeed } from '../urlSeed'
+import { parseSeed, randomSeed, resolveUrlSeed } from '../urlSeed'
 
 describe('parseSeed', () => {
   it.each([
@@ -42,5 +42,14 @@ describe('resolveUrlSeed', () => {
     const original = new URL('https://example.test/')
     resolveUrlSeed(original, random)
     expect(original.search).toBe('')
+  })
+})
+
+describe('randomSeed', () => {
+  it('returns a whole number the seed parser accepts', () => {
+    for (let i = 0; i < 20; i++) {
+      const seed = randomSeed()
+      expect(parseSeed(String(seed))).toBe(seed)
+    }
   })
 })

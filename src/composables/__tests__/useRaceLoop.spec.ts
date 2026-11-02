@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { effectScope, nextTick, ref } from 'vue'
-import { GAME_CONFIG } from '@/config/game'
 import { useRaceLoop, type FrameScheduler } from '../useRaceLoop'
 
 /** Manually driven stand-in for requestAnimationFrame. */
@@ -30,13 +29,18 @@ function fakeScheduler() {
 
 const scopes: ReturnType<typeof effectScope>[] = []
 
+/** Frame gap cap used by these specs; deliberately unrelated to the game config. */
+const MAX_FRAME_MS = 250
+
 function setup(initiallyActive: boolean) {
   const active = ref(initiallyActive)
   const onFrame = vi.fn<(deltaMs: number) => void>()
   const frames = fakeScheduler()
   const scope = effectScope()
   scopes.push(scope)
-  scope.run(() => useRaceLoop(active, onFrame, frames.scheduler))
+  scope.run(() =>
+    useRaceLoop(active, onFrame, { maxFrameMs: MAX_FRAME_MS, scheduler: frames.scheduler }),
+  )
   return { active, onFrame, frames, scope }
 }
 
@@ -64,7 +68,7 @@ describe('useRaceLoop', () => {
     const { frames, onFrame } = setup(true)
     frames.frame(0)
     frames.frame(5000)
-    expect(onFrame).toHaveBeenCalledWith(GAME_CONFIG.race.maxFrameMs)
+    expect(onFrame).toHaveBeenCalledWith(MAX_FRAME_MS)
   })
 
   it('stops when deactivated and does not count the inactive time on resume', async () => {

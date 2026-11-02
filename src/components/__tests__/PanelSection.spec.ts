@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import PanelSection from '../PanelSection.vue'
 
-function mountPanel() {
+function mountPanel(isEmpty = false) {
   return mount(PanelSection, {
-    props: { title: 'Program' },
+    props: { title: 'Program', isEmpty, emptyMessage: 'Nothing here yet.' },
     slots: { default: '<p class="content">Body</p>' },
   })
 }
@@ -21,5 +21,15 @@ describe('PanelSection', () => {
 
   it('places the slot content inside the scrollable body', () => {
     expect(mountPanel().get('.panel-body .content').text()).toBe('Body')
+  })
+
+  it('shows the empty message instead of the content when empty', () => {
+    const w = mountPanel(true)
+    expect(w.get('.panel-body').text()).toBe('Nothing here yet.')
+    expect(w.find('.content').exists()).toBe(false)
+  })
+
+  it('does not show the empty message when there is content', () => {
+    expect(mountPanel(false).text()).not.toContain('Nothing here yet.')
   })
 })
