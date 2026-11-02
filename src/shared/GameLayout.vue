@@ -9,6 +9,10 @@
  * and Results tables too narrow for a horse name on one line.
  * Narrow screens: one column (track, results, program, horse list).
  *
+ * Program and Results sit in one scroll container, so their rounds stay side
+ * by side while scrolling. On narrow screens nothing scrolls inside them and
+ * the page scrolls instead.
+ *
  * The track comes first in DOM order so keyboard and screen reader users
  * reach the race before the long tables; the grid places it visually.
  */
@@ -27,8 +31,10 @@ defineSlots<{
     <main class="main">
       <div class="area-track"><slot name="track" /></div>
       <div class="area-stable"><slot name="stable" /></div>
-      <div class="area-program"><slot name="program" /></div>
-      <div class="area-results"><slot name="results" /></div>
+      <div class="area-rounds" data-test="rounds-scroll">
+        <div class="area-program"><slot name="program" /></div>
+        <div class="area-results"><slot name="results" /></div>
+      </div>
     </main>
   </div>
 </template>
@@ -48,8 +54,7 @@ defineSlots<{
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
     'track'
-    'results'
-    'program'
+    'rounds'
     'stable';
 }
 
@@ -60,6 +65,33 @@ defineSlots<{
 
 .area-stable {
   grid-area: stable;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  max-height: 70vh;
+}
+
+.area-stable > :deep(*) {
+  flex: 1 1 auto;
+}
+
+/* Narrow screens: results above the program, and the page does the scrolling. */
+.area-rounds {
+  grid-area: rounds;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'results'
+    'program';
+  min-width: 0;
+}
+
+.area-program,
+.area-results {
+  display: flex;
+  min-width: 0;
 }
 
 .area-program {
@@ -70,17 +102,7 @@ defineSlots<{
   grid-area: results;
 }
 
-.area-stable,
-.area-program,
-.area-results {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  max-height: 70vh;
-}
-
-.area-stable > :deep(*),
+/* Both panels stretch to the row height, so their frames line up. */
 .area-program > :deep(*),
 .area-results > :deep(*) {
   flex: 1 1 auto;
@@ -93,9 +115,33 @@ defineSlots<{
       'track track track'
       'stable program results';
   }
+
+  /*
+   * One scroller for both panels, so round N of the program stays level with
+   * round N of the results. It spans the program and results columns of the
+   * page grid and reuses them through subgrid, so each panel keeps exactly the
+   * width it would have on its own.
+   */
+  .area-rounds {
+    grid-row: program;
+    grid-column: program-start / results-end;
+    grid-template-columns: subgrid;
+    grid-template-areas: none;
+    max-height: 70vh;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .area-program {
+    grid-area: auto / program;
+  }
+
+  .area-results {
+    grid-area: auto / results;
+  }
 }
 
-/* Wide screens: all four columns fit the viewport, each panel scrolls on its own. */
+/* Wide screens: all four columns fit the viewport; the horse list and the rounds scroll on their own. */
 @media (min-width: 1440px) {
   .layout {
     height: 100vh;
@@ -115,8 +161,7 @@ defineSlots<{
   }
 
   .area-stable,
-  .area-program,
-  .area-results {
+  .area-rounds {
     max-height: 100%;
   }
 }

@@ -44,10 +44,16 @@ const headingId = useId()
   border-radius: var(--radius);
 }
 
+/* Sticky, so the title stays visible when an outer container scrolls the whole panel. */
 .panel-title {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   margin: 0;
   padding: 0.5rem 0.75rem;
   border-bottom: 1px solid var(--color-border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--color-surface);
   font-size: 1rem;
 }
 
