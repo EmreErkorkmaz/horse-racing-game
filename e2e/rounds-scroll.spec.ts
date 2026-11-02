@@ -11,8 +11,8 @@ import {
 
 /*
  * Program and Results scroll together: side by side they share one scroller
- * and stay aligned round by round; in the one-column phone layout the page
- * scrolls instead of either panel.
+ * and stay aligned round by round. Phones show one panel at a time instead
+ * (see mobile-tabs.spec.ts).
  */
 
 const FINISHED_ROUNDS = 2
@@ -107,10 +107,3 @@ for (const viewport of [
     expect(await extraHeight(resultsPanel(page))).toBe(0)
   })
 }
-
-test('lets the page scroll instead of either panel on a phone', async ({ page }) => {
-  await page.setViewportSize({ width: 375, height: 812 })
-  await page.goto(SEEDED_URL)
-  await finishRounds(page, FINISHED_ROUNDS)
-  expect(await innerOverflow(roundsScroll(page))).toBe(0)
-})

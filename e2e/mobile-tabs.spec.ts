@@ -11,8 +11,8 @@ import {
 } from './support/game'
 
 /*
- * Phones show one side panel at a time behind tabs, so the page does not stack
- * the stable, the program and the results. Wider screens keep every panel.
+ * Phones show one side panel at a time behind tabs. The page stays one screen
+ * tall and the active panel scrolls on its own. Wider screens keep every panel.
  */
 
 const PHONE = { width: 375, height: 740 }
@@ -48,6 +48,35 @@ test('switches the phone panel with the game and on request', async ({ page }) =
   await tab(page, 'Horses').click()
   await expect(horseListPanel(page)).toBeVisible()
   await expect(resultsPanel(page)).toBeHidden()
+})
+
+test('keeps the phone page one screen tall and scrolls inside the active panel', async ({
+  page,
+}) => {
+  await page.setViewportSize(PHONE)
+  await page.goto(SEEDED_URL)
+  await generateButton(page).click()
+  await expect(programPanel(page)).toBeVisible()
+
+  const pageOverflow = await page.evaluate(
+    () => document.documentElement.scrollHeight - window.innerHeight,
+  )
+  expect(pageOverflow).toBeLessThanOrEqual(0)
+
+  // Six rounds do not fit one screen, so the panel or a wrapper around it must scroll.
+  const panelScroll = await programPanel(page).evaluate((root) => {
+    const ancestors: Element[] = []
+    for (let el = root.parentElement; el && el !== document.body; el = el.parentElement) {
+      ancestors.push(el)
+    }
+    return Math.max(
+      0,
+      ...[root, ...root.querySelectorAll('*'), ...ancestors]
+        .filter((element) => ['auto', 'scroll'].includes(getComputedStyle(element).overflowY))
+        .map((element) => element.scrollHeight - element.clientHeight),
+    )
+  })
+  expect(panelScroll).toBeGreaterThan(0)
 })
 
 for (const viewport of [
