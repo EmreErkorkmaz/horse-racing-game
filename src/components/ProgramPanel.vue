@@ -3,10 +3,8 @@
  * Panel listing every round of the program with its runners in lane order.
  * The round that is on the track is highlighted.
  */
-import { computed, toRef } from 'vue'
 import type { Horse, Round } from '@/domain/types'
-import type { RoundTableEntry } from './types'
-import { useHorseLookup } from '@/composables/useHorseLookup'
+import { useProgramTables } from '@/composables/useProgramTables'
 import PanelSection from './PanelSection.vue'
 import RoundTable from './RoundTable.vue'
 
@@ -19,18 +17,10 @@ const props = defineProps<{
   currentRoundIndex: number | null
 }>()
 
-const horseById = useHorseLookup(toRef(props, 'horses'))
-
 /** Rows per round; position equals the lane number (1-based). */
-const tables = computed(() =>
-  props.rounds.map((round) => {
-    const entries: RoundTableEntry[] = []
-    for (const id of round.horseIds) {
-      const horse = horseById.value.get(id)
-      if (horse) entries.push({ position: entries.length + 1, horse })
-    }
-    return { round, entries }
-  }),
+const tables = useProgramTables(
+  () => props.rounds,
+  () => props.horses,
 )
 </script>
 

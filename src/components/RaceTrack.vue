@@ -8,7 +8,7 @@
  * number (`fraction`), so a frame only re-renders the lanes whose horse
  * actually moved, and inside a lane only the runner transform changes.
  */
-import { computed, toRef } from 'vue'
+import { computed } from 'vue'
 import type { Horse, LaneProgress, Round } from '@/domain/types'
 import { roundLabel, toFraction } from './format'
 import { useHorseLookup } from '@/composables/useHorseLookup'
@@ -31,7 +31,7 @@ const props = withDefaults(
   { running: false, programFinished: false },
 )
 
-const horseById = useHorseLookup(toRef(props, 'horses'))
+const horseById = useHorseLookup(() => props.horses)
 
 const label = computed(() => {
   if (props.programFinished) return 'Program finished. Generate a new program to race again.'
