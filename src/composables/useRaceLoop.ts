@@ -32,7 +32,7 @@ const browserScheduler: FrameScheduler = {
  * The loop knows nothing about the game; the caller decides what a frame does.
  * It stops when the owning component or effect scope is disposed.
  *
- * @param active Whether frames should run, e.g. the store's `isRunning` flag.
+ * @param active Whether frames should run, e.g. the store's `isRaceRunning` flag.
  * @param onFrame Receives the elapsed milliseconds of each frame.
  * @param options Frame gap cap and an optional scheduler.
  */

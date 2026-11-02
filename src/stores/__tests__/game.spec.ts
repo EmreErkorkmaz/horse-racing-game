@@ -264,10 +264,10 @@ describe('determinism', () => {
 describe('status flags', () => {
   it('report a running race and a pending round choice', () => {
     const store = readyStore()
-    expect([store.isRunning, store.awaitsRoundChoice]).toEqual([false, false])
+    expect([store.isRaceRunning, store.isAwaitingRoundChoice]).toEqual([false, false])
     store.toggle()
-    expect([store.isRunning, store.awaitsRoundChoice]).toEqual([true, false])
+    expect([store.isRaceRunning, store.isAwaitingRoundChoice]).toEqual([true, false])
     store.tick(LONG_TICK)
-    expect([store.isRunning, store.awaitsRoundChoice]).toEqual([false, true])
+    expect([store.isRaceRunning, store.isAwaitingRoundChoice]).toEqual([false, true])
   })
 })

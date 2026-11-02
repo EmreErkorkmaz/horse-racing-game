@@ -1,37 +1,76 @@
 import { describe, expect, it } from 'vitest'
-import {
-  isAwaitingRoundChoice,
-  canChangeHorseCount,
-  canGenerate,
-  canToggle,
-  isRaceRunning,
-} from '../gameRules'
+import * as rules from '../gameRules'
 import type { GameStatus } from '../types'
 
 /** Expected answer of every rule in every status; one row per status. */
-const table: [
-  GameStatus,
-  { horseCount: boolean; generate: boolean; toggle: boolean; running: boolean; choice: boolean },
-][] = [
-  ['idle', { horseCount: true, generate: true, toggle: false, running: false, choice: false }],
-  ['ready', { horseCount: true, generate: true, toggle: true, running: false, choice: false }],
-  ['running', { horseCount: false, generate: false, toggle: true, running: true, choice: false }],
-  ['paused', { horseCount: false, generate: true, toggle: true, running: false, choice: false }],
+const table: [GameStatus, Record<keyof typeof rules, boolean>][] = [
+  [
+    'idle',
+    {
+      canChangeHorseCount: true,
+      canGenerate: true,
+      canToggle: false,
+      isRaceRunning: false,
+      isAwaitingRoundChoice: false,
+    },
+  ],
+  [
+    'ready',
+    {
+      canChangeHorseCount: true,
+      canGenerate: true,
+      canToggle: true,
+      isRaceRunning: false,
+      isAwaitingRoundChoice: false,
+    },
+  ],
+  [
+    'running',
+    {
+      canChangeHorseCount: false,
+      canGenerate: false,
+      canToggle: true,
+      isRaceRunning: true,
+      isAwaitingRoundChoice: false,
+    },
+  ],
+  [
+    'paused',
+    {
+      canChangeHorseCount: false,
+      canGenerate: true,
+      canToggle: true,
+      isRaceRunning: false,
+      isAwaitingRoundChoice: false,
+    },
+  ],
   [
     'roundFinished',
-    { horseCount: false, generate: false, toggle: false, running: false, choice: true },
+    {
+      canChangeHorseCount: false,
+      canGenerate: false,
+      canToggle: false,
+      isRaceRunning: false,
+      isAwaitingRoundChoice: true,
+    },
   ],
-  ['finished', { horseCount: true, generate: true, toggle: false, running: false, choice: false }],
+  [
+    'finished',
+    {
+      canChangeHorseCount: true,
+      canGenerate: true,
+      canToggle: false,
+      isRaceRunning: false,
+      isAwaitingRoundChoice: false,
+    },
+  ],
 ]
 
 describe('game rules', () => {
   it.each(table)('in %s', (status, expected) => {
-    expect({
-      horseCount: canChangeHorseCount(status),
-      generate: canGenerate(status),
-      toggle: canToggle(status),
-      running: isRaceRunning(status),
-      choice: isAwaitingRoundChoice(status),
-    }).toEqual(expected)
+    const actual = Object.fromEntries(
+      Object.entries(rules).map(([name, rule]) => [name, rule(status)]),
+    )
+    expect(actual).toEqual(expected)
   })
 })

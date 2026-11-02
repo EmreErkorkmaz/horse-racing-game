@@ -1,13 +1,7 @@
 import { computed, ref, shallowRef } from 'vue'
 import { defineStore } from 'pinia'
 import { GAME_CONFIG, type SpeedMultiplier } from '@/config/game'
-import {
-  canChangeHorseCount,
-  canGenerate,
-  canToggle,
-  isAwaitingRoundChoice,
-  isRaceRunning,
-} from '@/domain/gameRules'
+import * as rules from '@/domain/gameRules'
 import { generateHorses } from '@/domain/horses'
 import { generateProgram } from '@/domain/program'
 import { createRace, isRaceFinished, rankRace, stepRace, type RaceState } from '@/domain/race'
@@ -17,17 +11,18 @@ import type { GameStatus, Horse, LaneProgress, Round, RoundResult } from '@/doma
 /**
  * Game state and the state machine that drives it.
  *
- * Transitions (any other action in a given status is ignored):
+ * Which statuses allow an action is defined in `domain/gameRules.ts`; an
+ * action called in any other status is ignored. Where each action leads:
  *
- * | Action         | Allowed in                     | Leads to                    |
- * |----------------|--------------------------------|-----------------------------|
- * | `init`         | any                            | `idle`                      |
- * | `setHorseCount`| `idle`, `ready`, `finished`    | `idle` (program dropped)    |
- * | `generate`     | `idle`, `ready`, `paused`, `finished` | `ready`              |
- * | `toggle`       | `ready`, `running`, `paused`   | `running` / `paused`        |
- * | `tick`         | `running`                      | `roundFinished` at the line |
- * | `nextRound`    | `roundFinished`, not last round| `running`                   |
- * | `finish`       | `roundFinished`                | `finished`                  |
+ * | Action          | Leads to                                                    |
+ * |-----------------|-------------------------------------------------------------|
+ * | `init`          | `idle`                                                      |
+ * | `setHorseCount` | `idle` (program dropped)                                    |
+ * | `generate`      | `ready`                                                     |
+ * | `toggle`        | `running` from `ready` or `paused`; `paused` from `running` |
+ * | `tick`          | `roundFinished` once every horse has crossed the line       |
+ * | `nextRound`     | `running` (not available after the last round)              |
+ * | `finish`        | `finished`                                                  |
  *
  * Every random draw (stable, program, races) comes from one seeded `Rng`, so
  * the same seed and the same actions always replay the same game.
@@ -52,10 +47,10 @@ export const useGameStore = defineStore('game', () => {
   const horseCount = computed(() => horses.value.length)
 
   /** The race clock is running. */
-  const isRunning = computed(() => isRaceRunning(status.value))
+  const isRaceRunning = computed(() => rules.isRaceRunning(status.value))
 
   /** A round has ended and the next round or the finish must be chosen. */
-  const awaitsRoundChoice = computed(() => isAwaitingRoundChoice(status.value))
+  const isAwaitingRoundChoice = computed(() => rules.isAwaitingRoundChoice(status.value))
 
   /** The round on the track: the active one, or the first one before the start. */
   const currentRound = computed<Round | null>(
@@ -98,7 +93,7 @@ export const useGameStore = defineStore('game', () => {
 
   /** Replaces the stable with `count` new horses and drops the program. */
   function setHorseCount(count: number): void {
-    if (!canChangeHorseCount(status.value)) return
+    if (!rules.canChangeHorseCount(status.value)) return
     resetProgram()
     horses.value = generateHorses(count, rng)
     status.value = 'idle'
@@ -106,7 +101,7 @@ export const useGameStore = defineStore('game', () => {
 
   /** Draws a new program for the current stable; any race in progress is dropped. */
   function generate(): void {
-    if (!canGenerate(status.value)) return
+    if (!rules.canGenerate(status.value)) return
     resetProgram()
     program.value = generateProgram(horses.value, rng)
     status.value = 'ready'
@@ -114,7 +109,7 @@ export const useGameStore = defineStore('game', () => {
 
   /** Start, pause or resume, depending on the current status. */
   function toggle(): void {
-    if (!canToggle(status.value)) return
+    if (!rules.canToggle(status.value)) return
     if (status.value === 'ready') startRound(0)
     else if (status.value === 'running') status.value = 'paused'
     else if (status.value === 'paused') status.value = 'running'
@@ -133,7 +128,7 @@ export const useGameStore = defineStore('game', () => {
    * waits for `nextRound` or `finish`.
    */
   function tick(realMs: number): void {
-    if (!isRunning.value || !race.value) return
+    if (!isRaceRunning.value || !race.value) return
     const { stepMs, timeScale } = GAME_CONFIG.race
     pendingMs += realMs * timeScale * speed.value
 
@@ -156,13 +151,13 @@ export const useGameStore = defineStore('game', () => {
 
   /** Starts the following round of the program. */
   function nextRound(): void {
-    if (!awaitsRoundChoice.value || isLastRound.value) return
+    if (!isAwaitingRoundChoice.value || isLastRound.value) return
     startRound((currentRoundIndex.value ?? 0) + 1)
   }
 
   /** Ends the program after the current round; remaining rounds are not run. */
   function finish(): void {
-    if (!awaitsRoundChoice.value) return
+    if (!isAwaitingRoundChoice.value) return
     status.value = 'finished'
   }
 
@@ -174,8 +169,8 @@ export const useGameStore = defineStore('game', () => {
     results,
     currentRoundIndex,
     horseCount,
-    isRunning,
-    awaitsRoundChoice,
+    isRaceRunning,
+    isAwaitingRoundChoice,
     currentRound,
     progress,
     lastResult,

@@ -32,15 +32,15 @@ const {
   currentRoundIndex,
   progress,
   isLastRound,
-  isRunning,
-  awaitsRoundChoice,
+  isRaceRunning,
+  isAwaitingRoundChoice,
 } = storeToRefs(store)
 
 const { seed, url } = resolveUrlSeed(new URL(window.location.href), randomSeed)
 window.history.replaceState(window.history.state, '', url)
 store.init(seed)
 
-useRaceLoop(isRunning, store.tick, { maxFrameMs: GAME_CONFIG.race.maxFrameMs })
+useRaceLoop(isRaceRunning, store.tick, { maxFrameMs: GAME_CONFIG.race.maxFrameMs })
 </script>
 
 <template>
@@ -57,7 +57,12 @@ useRaceLoop(isRunning, store.tick, { maxFrameMs: GAME_CONFIG.race.maxFrameMs })
       />
     </template>
     <template #track>
-      <RaceTrack :round="currentRound" :horses="horses" :progress="progress" :running="isRunning" />
+      <RaceTrack
+        :round="currentRound"
+        :horses="horses"
+        :progress="progress"
+        :running="isRaceRunning"
+      />
     </template>
     <template #horses>
       <HorseList :horses="horses" />
@@ -71,7 +76,7 @@ useRaceLoop(isRunning, store.tick, { maxFrameMs: GAME_CONFIG.race.maxFrameMs })
   </GameLayout>
 
   <RoundResultModal
-    :open="awaitsRoundChoice"
+    :open="isAwaitingRoundChoice"
     :rounds="program"
     :results="results"
     :horses="horses"
