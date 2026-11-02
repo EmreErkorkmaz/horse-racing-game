@@ -109,12 +109,14 @@ function panelAttrs(id: PanelId) {
 .main {
   /* Tab bar height; the panel below it gets the rest of the screen. */
   --tabs-height: 2.25rem;
+  /* Gap between the areas and padding around them. */
+  --space: 0.75rem;
 
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: var(--space);
+  padding: var(--space);
 }
 
 .area-track {
@@ -130,9 +132,9 @@ function panelAttrs(id: PanelId) {
 
 .area-stable,
 .area-rounds {
-  /* Screen height minus the sticky tabs, the gap and the bottom padding. */
-  max-height: calc(100vh - var(--tabs-height) - 1.5rem);
-  max-height: calc(100dvh - var(--tabs-height) - 1.5rem);
+  /* Screen height minus the sticky tabs, the gap below them and the bottom padding. */
+  max-height: calc(100vh - var(--tabs-height) - 2 * var(--space));
+  max-height: calc(100dvh - var(--tabs-height) - 2 * var(--space));
 }
 
 .area-stable,
