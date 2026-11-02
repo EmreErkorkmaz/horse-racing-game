@@ -22,6 +22,11 @@ export function parseSeed(value: string | null): number | null {
   return seed <= MAX_SEED ? seed : null
 }
 
+/** Draws a random seed from the browser's cryptographic random source. */
+export function randomSeed(): number {
+  return crypto.getRandomValues(new Uint32Array(1))[0] ?? 0
+}
+
 /**
  * Takes the seed from `url`, or draws a new one when it is missing or invalid.
  *

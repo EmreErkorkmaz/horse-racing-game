@@ -10,6 +10,7 @@ src/
   domain/             Pure TypeScript, no Vue imports. Types, RNG, horse/schedule generation, race engine.
   stores/game.ts      Pinia store: game status machine, horses, program, results, live lane progress.
   composables/        Vue glue (requestAnimationFrame race loop).
+  lib/                Framework-free browser helpers (URL seed).
   components/         Presentational components: data in via props, intent out via emits. No store access.
   App.vue             Container: reads the store, passes props, handles emits.
 ```

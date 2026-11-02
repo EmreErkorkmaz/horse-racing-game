@@ -10,7 +10,8 @@
 import { storeToRefs } from 'pinia'
 import { useGameStore } from '@/stores/game'
 import { useRaceLoop } from '@/composables/useRaceLoop'
-import { resolveUrlSeed } from '@/lib/urlSeed'
+import { GAME_CONFIG } from '@/config/game'
+import { randomSeed, resolveUrlSeed } from '@/lib/urlSeed'
 import AppHeader from '@/components/AppHeader.vue'
 import GameLayout from '@/components/GameLayout.vue'
 import HorseList from '@/components/HorseList.vue'
@@ -35,14 +36,11 @@ const {
   awaitsRoundChoice,
 } = storeToRefs(store)
 
-const { seed, url } = resolveUrlSeed(
-  new URL(window.location.href),
-  () => crypto.getRandomValues(new Uint32Array(1))[0] ?? 0,
-)
+const { seed, url } = resolveUrlSeed(new URL(window.location.href), randomSeed)
 window.history.replaceState(window.history.state, '', url)
 store.init(seed)
 
-useRaceLoop(isRunning, store.tick)
+useRaceLoop(isRunning, store.tick, { maxFrameMs: GAME_CONFIG.race.maxFrameMs })
 </script>
 
 <template>

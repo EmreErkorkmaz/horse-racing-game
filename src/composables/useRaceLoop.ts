@@ -1,10 +1,16 @@
 import { onScopeDispose, toValue, watch, type MaybeRefOrGetter } from 'vue'
-import { GAME_CONFIG } from '@/config/game'
 
 /** Frame scheduling functions; `requestAnimationFrame` in the browser. */
 export interface FrameScheduler {
   request(callback: FrameRequestCallback): number
   cancel(id: number): void
+}
+
+export interface RaceLoopOptions {
+  /** Longest gap between two frames passed to `onFrame`; longer gaps are cut to it. */
+  maxFrameMs: number
+  /** Frame scheduling functions; defaults to the browser's, replaced by a fake in tests. */
+  scheduler?: FrameScheduler
 }
 
 const browserScheduler: FrameScheduler = {
@@ -18,29 +24,29 @@ const browserScheduler: FrameScheduler = {
  *
  * - The first frame after (re)activation only records the time, so time spent
  *   inactive (paused, between rounds) is never reported.
- * - A gap longer than `GAME_CONFIG.race.maxFrameMs` is cut to that value, so a
- *   tab returning from the background does not jump the race ahead.
+ * - A gap longer than `maxFrameMs` is cut to that value, so a tab returning
+ *   from the background does not jump the race ahead.
  * - Browsers stop animation frames in hidden tabs, so the loop costs nothing
  *   there.
  *
  * The loop knows nothing about the game; the caller decides what a frame does.
  * It stops when the owning component or effect scope is disposed.
  *
- * @param active Whether frames should run, e.g. `() => store.status === 'running'`.
+ * @param active Whether frames should run, e.g. the store's `isRunning` flag.
  * @param onFrame Receives the elapsed milliseconds of each frame.
- * @param scheduler Frame scheduling functions; replaced by a fake in tests.
+ * @param options Frame gap cap and an optional scheduler.
  */
 export function useRaceLoop(
   active: MaybeRefOrGetter<boolean>,
   onFrame: (deltaMs: number) => void,
-  scheduler: FrameScheduler = browserScheduler,
+  { maxFrameMs, scheduler = browserScheduler }: RaceLoopOptions,
 ): void {
   let frameId: number | null = null
   let lastTime: number | null = null
 
   function loop(time: number): void {
     if (lastTime !== null) {
-      onFrame(Math.min(time - lastTime, GAME_CONFIG.race.maxFrameMs))
+      onFrame(Math.min(time - lastTime, maxFrameMs))
     }
     lastTime = time
     frameId = scheduler.request(loop)
@@ -60,7 +66,10 @@ export function useRaceLoop(
 
   watch(
     () => toValue(active),
-    (isActive) => (isActive ? start() : stop()),
+    (isActive) => {
+      if (isActive) start()
+      else stop()
+    },
     { immediate: true },
   )
   onScopeDispose(stop)
