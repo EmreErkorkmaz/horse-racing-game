@@ -31,6 +31,10 @@ export default defineConfig({
       testMatch: 'visual/**/*.spec.ts',
       // Baselines exist for Linux only, so the file name carries no platform suffix.
       snapshotPathTemplate: '{testDir}/visual/baselines/{arg}{ext}',
+      // The default per-pixel threshold (0.2) lets a translucent overlay such as a
+      // 30% ground shadow pass unnoticed. The image renders identically on every
+      // run, so a much stricter value stays stable.
+      expect: { toHaveScreenshot: { threshold: 0.05 } },
     },
   ],
   webServer: {
