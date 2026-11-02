@@ -5,11 +5,10 @@
  * A polite live region announces each new result in one sentence
  * (round and winner) instead of reading the whole table aloud.
  */
-import { computed, toRef, useId } from 'vue'
+import { computed, useId } from 'vue'
 import type { Horse, Round, RoundResult } from '@/domain/types'
-import type { RoundTableEntry } from './types'
 import { roundLabel } from './format'
-import { useHorseLookup } from './useHorseLookup'
+import { useResultTables } from './useResultTables'
 import RoundTable from './RoundTable.vue'
 
 const props = defineProps<{
@@ -22,25 +21,14 @@ const props = defineProps<{
 }>()
 
 const headingId = useId()
-const horseById = useHorseLookup(toRef(props, 'horses'))
-
-const tables = computed(() => {
-  const roundByIndex = new Map(props.rounds.map((round) => [round.index, round]))
-  return props.results.flatMap((result) => {
-    const round = roundByIndex.get(result.roundIndex)
-    if (!round) return []
-    const entries: RoundTableEntry[] = [...result.placements]
-      .sort((a, b) => a.position - b.position)
-      .flatMap(({ position, horseId }) => {
-        const horse = horseById.value.get(horseId)
-        return horse ? [{ position, horse }] : []
-      })
-    return [{ round, entries }]
-  })
-})
+const tables = useResultTables(
+  () => props.rounds,
+  () => props.results,
+  () => props.horses,
+)
 
 const announcement = computed(() => {
-  const latest = tables.value[tables.value.length - 1]
+  const latest = tables.value.at(-1)
   const winner = latest?.entries[0]
   if (!latest || !winner) return ''
   return `${roundLabel(latest.round)} finished. Winner: ${winner.horse.name}.`

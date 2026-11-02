@@ -33,10 +33,19 @@ const emit = defineEmits<{
 
 const countId = useId()
 
-/** A round is on the track, either moving or stopped. */
-const raceInProgress = computed(() => props.status === 'running' || props.status === 'paused')
+/** A round is on the track: moving, stopped, or just finished and awaiting the next step. */
+const raceInProgress = computed(
+  () => props.status === 'running' || props.status === 'paused' || props.status === 'roundFinished',
+)
 
-const toggleDisabled = computed(() => props.status === 'idle' || props.status === 'finished')
+const toggleDisabled = computed(
+  () => props.status === 'idle' || props.status === 'roundFinished' || props.status === 'finished',
+)
+
+/** A new program cannot be drawn while horses move or while the round result awaits a choice. */
+const generateDisabled = computed(
+  () => props.status === 'running' || props.status === 'roundFinished',
+)
 
 const toggleLabel = computed(() => {
   if (props.status === 'running') return 'Pause'
@@ -100,7 +109,7 @@ function onCountChange(event: Event) {
         type="button"
         class="button"
         data-test="generate"
-        :disabled="status === 'running'"
+        :disabled="generateDisabled"
         @click="emit('generate')"
       >
         Generate Program
@@ -223,29 +232,5 @@ function onCountChange(event: Event) {
 .speed-option input:focus-visible + span {
   outline: var(--focus-ring);
   outline-offset: 2px;
-}
-
-.button {
-  padding: 0.5rem 0.875rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font: inherit;
-  font-weight: 600;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.button-primary {
-  min-width: 7rem;
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-on-accent);
-}
-
-.button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 </style>
