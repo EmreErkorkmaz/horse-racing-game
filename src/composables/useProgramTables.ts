@@ -2,8 +2,8 @@
  * Component helper that turns the race program into table-ready data.
  */
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
-import type { RoundTableEntry } from '@/components/types'
 import type { Horse, Round } from '@/domain/types'
+import type { RoundTableEntry } from './types'
 import { useHorseLookup } from './useHorseLookup'
 
 /** A scheduled round with its runners resolved to horses, in lane order. */

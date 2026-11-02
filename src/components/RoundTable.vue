@@ -5,7 +5,7 @@
  * (finishing order) panels.
  */
 import type { Round } from '@/domain/types'
-import type { RoundTableEntry } from './types'
+import type { RoundTableEntry } from '@/composables/types'
 import { roundLabel } from './format'
 import HorseSwatch from './HorseSwatch.vue'
 

@@ -1,5 +1,5 @@
 /**
- * View-model types used only by the presentational components.
+ * View-model types produced by the table helpers and rendered by the components.
  */
 import type { Horse } from '@/domain/types'
 
