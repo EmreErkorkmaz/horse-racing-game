@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 import { ref } from 'vue'
 import type { Horse, Round } from '@/domain/types'
-import type { RoundTableEntry } from '@/composables/types'
+import type { RoundTableData, RoundTableEntry } from '@/composables/types'
 import { horses, rounds } from '@/components/__tests__/fixtures'
 import { useProgramTables } from '../useProgramTables'
 
@@ -10,6 +10,10 @@ const rows = (entries: RoundTableEntry[] | undefined) =>
   entries?.map((entry) => [entry.position, entry.horse.id])
 
 describe('useProgramTables', () => {
+  it('returns the shared round table shape', () => {
+    expectTypeOf(useProgramTables(rounds, horses).value).toEqualTypeOf<RoundTableData[]>()
+  })
+
   it('builds one table per round in program order', () => {
     const tables = useProgramTables(rounds, horses)
     expect(tables.value.map((table) => table.round)).toEqual(rounds)
