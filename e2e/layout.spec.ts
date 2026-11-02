@@ -23,3 +23,17 @@ for (const width of [375, 768, 1280, 1440]) {
     expect(await overflowOf(page, 'html')).toBe(0)
   })
 }
+
+for (const width of [1280, 1440]) {
+  test(`fits every horse name of the program on one line at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/?seed=1')
+    await page.getByRole('button', { name: 'Generate Program' }).click()
+    const rows = page.getByRole('region', { name: 'Program' }).locator('tbody tr')
+    const heights = await rows.evaluateAll((elements) =>
+      elements.map((row) => Math.round(row.getBoundingClientRect().height)),
+    )
+    // A wrapped name makes its row taller than the others.
+    expect(new Set(heights).size).toBe(1)
+  })
+}
