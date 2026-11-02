@@ -1,11 +1,27 @@
 import { expect, test, type Page } from '@playwright/test'
+import { GAME_CONFIG } from '../src/config/game'
 
-const ROUND_COUNT = 6
+const ROUND_COUNT = GAME_CONFIG.roundDistances.length
+
+/** Longest wait for one round to finish at 4x playback. */
+const ROUND_TIMEOUT_4X = 15_000
+/** Longest wait for one round to finish at 1x playback. */
+const ROUND_TIMEOUT_1X = 30_000
+/** Test budget for flows that run several rounds. */
+const MULTI_ROUND_TEST_TIMEOUT = 60_000
+
+/*
+ * Locators use roles and accessible names first; data-test hooks only where no
+ * role fits. The start button uses one because its label changes between
+ * Start, Pause and Resume.
+ */
 
 const generateButton = (page: Page) => page.getByRole('button', { name: 'Generate Program' })
 const toggleButton = (page: Page) => page.locator('[data-test="toggle"]')
 const modal = (page: Page) => page.getByRole('dialog')
 const resultsPanel = (page: Page) => page.getByRole('region', { name: 'Results' })
+const trackLabel = (page: Page) =>
+  page.getByRole('region', { name: 'Race track' }).getByRole('heading', { level: 2 })
 
 /** Generates a program at the given playback speed and starts the first round. */
 async function startGame(page: Page, speed: '1x' | '2x' | '4x' = '4x') {
@@ -14,15 +30,14 @@ async function startGame(page: Page, speed: '1x' | '2x' | '4x' = '4x') {
   await toggleButton(page).click()
 }
 
-/** Horse names of the round shown in the modal, in finishing order. */
-async function modalPlacements(page: Page): Promise<string[]> {
-  const rows = modal(page).locator('[data-test="latest-round"] tbody tr')
-  return (await rows.allTextContents()).map((text) => text.replace(/^\s*\d+\s*\d+/, '').trim())
+/** Text of each row of the round shown in the modal (position, horse number and name), in finishing order. */
+function modalRows(page: Page): Promise<string[]> {
+  return modal(page).locator('[data-test="latest-round"] tbody tr').allInnerTexts()
 }
 
 /** Waits for the result modal of the given 1-based round, with one collapsed section per earlier round. */
 async function expectRoundModal(page: Page, round: number) {
-  await expect(modal(page)).toBeVisible({ timeout: 15_000 })
+  await expect(modal(page)).toBeVisible({ timeout: ROUND_TIMEOUT_4X })
   await expect(modal(page).getByRole('heading', { level: 2 })).toHaveText(
     new RegExp(`^Round ${round} - \\d+m finished$`),
   )
@@ -45,12 +60,12 @@ function waitForFrames(page: Page, count: number): Promise<void> {
 /** Inline transforms of the runners, which encode their positions on the track. */
 function runnerPositions(page: Page): Promise<string[]> {
   return page
-    .locator('.runner')
+    .locator('[data-test="runner"]')
     .evaluateAll((runners) => runners.map((runner) => (runner as HTMLElement).style.transform))
 }
 
 test('runs the whole program round by round and lists every result', async ({ page }) => {
-  test.setTimeout(60_000)
+  test.setTimeout(MULTI_ROUND_TEST_TIMEOUT)
   await page.goto('/?seed=7')
   await startGame(page)
 
@@ -65,7 +80,7 @@ test('runs the whole program round by round and lists every result', async ({ pa
 
   await expect(modal(page)).toBeHidden()
   await expect(resultsPanel(page).getByRole('table')).toHaveCount(ROUND_COUNT)
-  await expect(page.locator('.track-label')).toHaveText(
+  await expect(trackLabel(page)).toHaveText(
     'Program finished. Generate a new program to race again.',
   )
   await expect(toggleButton(page)).toBeDisabled()
@@ -95,7 +110,7 @@ test('keeps the round modal open on Escape and works from the keyboard', async (
   await page.goto('/?seed=7')
   await startGame(page)
 
-  await expect(modal(page)).toBeVisible({ timeout: 15_000 })
+  await expect(modal(page)).toBeVisible({ timeout: ROUND_TIMEOUT_4X })
   const nextRound = modal(page).getByRole('button', { name: 'Next round' })
   await expect(nextRound).toBeFocused()
 
@@ -109,17 +124,17 @@ test('keeps the round modal open on Escape and works from the keyboard', async (
 })
 
 test('replays the same race for the same seed at any speed', async ({ page }) => {
-  test.setTimeout(60_000)
+  test.setTimeout(MULTI_ROUND_TEST_TIMEOUT)
   await page.goto('/?seed=7')
   await startGame(page, '4x')
-  await expect(modal(page)).toBeVisible({ timeout: 15_000 })
-  const fast = await modalPlacements(page)
+  await expect(modal(page)).toBeVisible({ timeout: ROUND_TIMEOUT_4X })
+  const fast = await modalRows(page)
 
   await page.goto('/?seed=7')
   await startGame(page, '1x')
-  await expect(modal(page)).toBeVisible({ timeout: 30_000 })
-  expect(await modalPlacements(page)).toEqual(fast)
-  expect(fast).toHaveLength(10)
+  await expect(modal(page)).toBeVisible({ timeout: ROUND_TIMEOUT_1X })
+  expect(await modalRows(page)).toEqual(fast)
+  expect(fast).toHaveLength(GAME_CONFIG.horsesPerRound)
 })
 
 test.describe('seed in the URL', () => {
@@ -164,5 +179,5 @@ test('races a smaller stable with every horse in each round', async ({ page }) =
   for (const table of await program.getByRole('table').all()) {
     await expect(table.locator('tbody tr')).toHaveCount(5)
   }
-  await expect(page.locator('.runner')).toHaveCount(5)
+  await expect(page.locator('[data-test="runner"]')).toHaveCount(5)
 })
