@@ -33,3 +33,11 @@ export function formatRaceTime(ms: number): string {
   const fraction = hundredths % 100
   return `${minutes}:${String(seconds).padStart(2, '0')}.${String(fraction).padStart(2, '0')}`
 }
+
+/**
+ * Finishing time as `m:ss.cc`, or an empty string when there is none (a
+ * program entry, or a horse that has not crossed the line).
+ */
+export function formatFinishTime(ms: number | null | undefined): string {
+  return ms == null ? '' : formatRaceTime(ms)
+}

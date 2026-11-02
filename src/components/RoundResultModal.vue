@@ -18,7 +18,7 @@
  */
 import { computed, onMounted, useId, useTemplateRef, watch } from 'vue'
 import type { Horse, Round, RoundResult } from '@/domain/types'
-import { formatRaceTime, roundLabel } from './format'
+import { formatFinishTime, roundLabel } from './format'
 import { useResultTables } from '@/composables/useResultTables'
 import HorseSwatch from './HorseSwatch.vue'
 import RoundTable from './RoundTable.vue'
@@ -54,11 +54,7 @@ const tables = useResultTables(
 const latest = computed(() => tables.value.at(-1) ?? null)
 const earlier = computed(() => tables.value.slice(0, -1))
 const winner = computed(() => latest.value?.entries[0] ?? null)
-
-/** Formatted finishing time, or an empty string when the time is unknown. */
-function timeOf(finishTime: number | null | undefined): string {
-  return finishTime == null ? '' : formatRaceTime(finishTime)
-}
+const winnerTime = computed(() => formatFinishTime(winner.value?.finishTime))
 
 function sync(open: boolean): void {
   const element = dialog.value
@@ -91,12 +87,10 @@ function onClose(): void {
         <h2 :id="titleId" class="modal-title">{{ roundLabel(latest.round) }} finished</h2>
         <p v-if="winner" class="winner" data-test="winner">
           <HorseSwatch :horse="winner.horse" />
-          <span
-            >Winner: <strong>{{ winner.horse.name }}</strong>
-            <template v-if="winner.finishTime != null">
-              · {{ timeOf(winner.finishTime) }}</template
-            ></span
-          >
+          <span>
+            Winner: <strong>{{ winner.horse.name }}</strong>
+            <template v-if="winnerTime"> · {{ winnerTime }}</template>
+          </span>
         </p>
       </header>
 
@@ -113,8 +107,8 @@ function onClose(): void {
               <span v-if="table.entries[0]" class="summary-winner">
                 <HorseSwatch :horse="table.entries[0].horse" />
                 Winner: {{ table.entries[0].horse.name }}
-                <span v-if="table.entries[0].finishTime != null" class="summary-time">{{
-                  timeOf(table.entries[0].finishTime)
+                <span v-if="table.entries[0].finishTime !== null" class="summary-time">{{
+                  formatFinishTime(table.entries[0].finishTime)
                 }}</span>
               </span>
             </summary>

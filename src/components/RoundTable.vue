@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /**
  * Table for a single round: a `Round N - XXXXm` caption followed by
- * Position / Name rows, optionally with each finishing time. Shared by the Program (lane order) and Results
- * (finishing order) panels.
+ * Position / Name rows. Shared by the Program (lane order) and Results
+ * (finishing order) panels; the round result dialog also shows a Time column.
  */
 import type { Round } from '@/domain/types'
 import type { RoundTableEntry } from '@/composables/types'
-import { formatRaceTime, roundLabel } from './format'
+import { formatFinishTime, roundLabel } from './format'
 import HorseSwatch from './HorseSwatch.vue'
 
 withDefaults(
@@ -49,7 +49,7 @@ withDefaults(
           <span class="name"><HorseSwatch :horse="entry.horse" />{{ entry.horse.name }}</span>
         </td>
         <td v-if="showTime" class="time">
-          {{ entry.finishTime == null ? '' : formatRaceTime(entry.finishTime) }}
+          {{ formatFinishTime(entry.finishTime) }}
         </td>
       </tr>
     </tbody>
