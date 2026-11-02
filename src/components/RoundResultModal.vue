@@ -139,7 +139,15 @@ function onClose(): void {
 </template>
 
 <style scoped>
+/*
+ * Open and close transitions. `display` and `overlay` transition as discrete
+ * properties so the dialog stays in the top layer until it has faded out, and
+ * @starting-style gives the first frame after opening its start values.
+ * Browsers without these features simply show and hide the dialog.
+ */
 .modal {
+  --modal-duration: 220ms;
+
   display: none;
   flex-direction: column;
   width: min(36rem, 100vw - 2rem);
@@ -150,14 +158,43 @@ function onClose(): void {
   background: var(--color-surface);
   color: var(--color-text);
   box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.3);
+  opacity: 0;
+  transform: translateY(0.75rem) scale(0.97);
+  transition:
+    opacity var(--modal-duration) ease-out,
+    transform var(--modal-duration) ease-out,
+    overlay var(--modal-duration) allow-discrete,
+    display var(--modal-duration) allow-discrete;
 }
 
 .modal[open] {
   display: flex;
+  opacity: 1;
+  transform: none;
 }
 
 .modal::backdrop {
+  background: rgb(0 0 0 / 0);
+  /* Older engines do not let ::backdrop inherit custom properties, so the duration is repeated. */
+  transition:
+    background-color 220ms ease-out,
+    overlay 220ms allow-discrete,
+    display 220ms allow-discrete;
+}
+
+.modal[open]::backdrop {
   background: rgb(0 0 0 / 0.55);
+}
+
+@starting-style {
+  .modal[open] {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.97);
+  }
+
+  .modal[open]::backdrop {
+    background: rgb(0 0 0 / 0);
+  }
 }
 
 .modal-header {
@@ -194,6 +231,20 @@ function onClose(): void {
 
 .earlier-round {
   border-top: 1px solid var(--color-border);
+  /* Lets the content height animate between 0 and auto where supported. */
+  interpolate-size: allow-keywords;
+}
+
+.earlier-round::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition:
+    block-size 200ms ease-out,
+    content-visibility 200ms allow-discrete;
+}
+
+.earlier-round[open]::details-content {
+  block-size: auto;
 }
 
 summary {
@@ -213,12 +264,14 @@ summary::marker {
 
 summary::before {
   content: '▸';
+  display: inline-block;
   margin-right: 0.25rem;
   color: var(--color-muted);
+  transition: transform 200ms ease-out;
 }
 
 details[open] > summary::before {
-  content: '▾';
+  transform: rotate(90deg);
 }
 
 .summary-round {
@@ -239,6 +292,15 @@ details[open] > summary::before {
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
   border-top: 1px solid var(--color-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal,
+  .modal::backdrop,
+  .earlier-round::details-content,
+  summary::before {
+    transition: none;
+  }
 }
 
 @media (max-width: 30rem) {
