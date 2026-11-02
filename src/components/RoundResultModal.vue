@@ -19,7 +19,7 @@
 import { computed, onMounted, useId, useTemplateRef, watch } from 'vue'
 import type { Horse, Round, RoundResult } from '@/domain/types'
 import { roundLabel } from './format'
-import { useResultTables } from './useResultTables'
+import { useResultTables } from '@/composables/useResultTables'
 import HorseSwatch from './HorseSwatch.vue'
 import RoundTable from './RoundTable.vue'
 

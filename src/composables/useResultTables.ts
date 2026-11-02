@@ -3,7 +3,7 @@
  */
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import type { Horse, Round, RoundResult } from '@/domain/types'
-import type { RoundTableEntry } from './types'
+import type { RoundTableEntry } from '@/components/types'
 import { useHorseLookup } from './useHorseLookup'
 
 /** A finished round with its placements resolved to horses, in finishing order. */

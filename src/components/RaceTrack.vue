@@ -11,7 +11,7 @@
 import { computed, toRef } from 'vue'
 import type { Horse, LaneProgress, Round } from '@/domain/types'
 import { roundLabel, toFraction } from './format'
-import { useHorseLookup } from './useHorseLookup'
+import { useHorseLookup } from '@/composables/useHorseLookup'
 import HorseIconSymbol from './HorseIconSymbol.vue'
 import RaceLane from './RaceLane.vue'
 

@@ -5,7 +5,7 @@
  * so assistive technology reads each result once.
  */
 import type { Horse, Round, RoundResult } from '@/domain/types'
-import { useResultTables } from './useResultTables'
+import { useResultTables } from '@/composables/useResultTables'
 import PanelSection from './PanelSection.vue'
 import RoundTable from './RoundTable.vue'
 

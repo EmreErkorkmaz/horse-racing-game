@@ -6,7 +6,7 @@
 import { computed, toRef } from 'vue'
 import type { Horse, Round } from '@/domain/types'
 import type { RoundTableEntry } from './types'
-import { useHorseLookup } from './useHorseLookup'
+import { useHorseLookup } from '@/composables/useHorseLookup'
 import PanelSection from './PanelSection.vue'
 import RoundTable from './RoundTable.vue'
 
