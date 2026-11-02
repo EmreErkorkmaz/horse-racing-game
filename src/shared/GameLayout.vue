@@ -210,7 +210,8 @@ function panelAttrs(id: PanelId) {
 
 @media (min-width: 1024px) {
   .main {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* As on wide screens, no panel gets narrower than its table, whatever the font. */
+    grid-template-columns: repeat(3, minmax(max-content, 1fr));
     grid-template-areas:
       'track track track'
       'stable program results';
