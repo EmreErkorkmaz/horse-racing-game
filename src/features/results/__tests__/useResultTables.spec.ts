@@ -1,8 +1,8 @@
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import { ref } from 'vue'
 import type { RoundResult } from '@/domain/types'
-import type { RoundTableData } from '@/composables/types'
-import { horses, results, rounds } from '@/components/__tests__/fixtures'
+import type { RoundTableData } from '@/shared/types'
+import { horses, results, rounds } from '@/shared/__tests__/fixtures'
 import { useResultTables } from '../useResultTables'
 
 /** Finishing position, horse id and time of each row. */

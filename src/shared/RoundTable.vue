@@ -5,7 +5,7 @@
  * (finishing order) panels; the round result dialog also shows a Time column.
  */
 import type { Round } from '@/domain/types'
-import type { RoundTableEntry } from '@/composables/types'
+import type { RoundTableEntry } from './types'
 import { formatFinishTime, roundLabel } from './format'
 import HorseSwatch from './HorseSwatch.vue'
 

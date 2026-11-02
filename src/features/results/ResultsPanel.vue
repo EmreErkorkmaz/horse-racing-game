@@ -5,9 +5,9 @@
  * so assistive technology reads each result once.
  */
 import type { Horse, Round, RoundResult } from '@/domain/types'
-import { useResultTables } from '@/composables/useResultTables'
-import PanelSection from './PanelSection.vue'
-import RoundTable from './RoundTable.vue'
+import { useResultTables } from './useResultTables'
+import PanelSection from '@/shared/PanelSection.vue'
+import RoundTable from '@/shared/RoundTable.vue'
 
 const props = defineProps<{
   /** Rounds of the program, used for the distance in each caption. */

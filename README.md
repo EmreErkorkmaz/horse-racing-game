@@ -53,9 +53,14 @@ src/
   domain/        Pure TypeScript, no framework imports: types, seeded RNG,
                  stable and program generation, race engine, status rules.
   stores/        Pinia store: the game state machine and its actions.
-  composables/   Vue glue: the requestAnimationFrame loop and table helpers.
-  lib/           Framework-free browser helpers (URL seed).
-  components/    Presentational components: props in, events out, no store access.
+  features/      One folder per screen section, with its components, helpers and tests:
+    header/      horse count, playback speed, Generate Program, Start / Pause
+    stable/      horse list
+    track/       race track, lanes, gallop animation, animation frame loop
+    program/     program panel
+    results/     results panel and round result dialog
+  shared/        Pieces used by several sections: page layout, panel frame,
+                 round table, color swatch, formatting, URL seed.
   App.vue        The only component that reads the store.
 ```
 
@@ -74,7 +79,7 @@ Development was test-first: new behavior lands as a failing `test:` commit follo
 
 | Layer      | Tool                                                           | What it covers                                                                                                                                                           |
 | ---------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Unit       | Vitest                                                         | RNG, stable and program generation, race engine, status rules, store transitions, composables, URL seed                                                                  |
+| Unit       | Vitest                                                         | RNG, stable and program generation, race engine, status rules, store transitions, table helpers, animation loop, URL seed                                                |
 | Component  | Vitest + Vue Test Utils                                        | Every component's props, events, states and accessibility attributes                                                                                                     |
 | End to end | Playwright                                                     | The full six-round flow, pause and resume, the keyboard-only dialog, seed replay at different speeds, URL seed rules, stable size, and layout overflow at 375 to 1920 px |
 | Visual     | Playwright screenshots in the official Playwright Docker image | Initial, program, round result dialog and finished screens at 375, 1280 and 1440 px                                                                                      |

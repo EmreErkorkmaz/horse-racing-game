@@ -11,8 +11,8 @@
 import { computed } from 'vue'
 import type { SpeedMultiplier } from '@/config/game'
 import type { Horse, LaneProgress, Round } from '@/domain/types'
-import { roundLabel, toFraction } from './format'
-import { useHorseLookup } from '@/composables/useHorseLookup'
+import { roundLabel, toFraction } from '@/shared/format'
+import { useHorseLookup } from '@/shared/useHorseLookup'
 import HorseIconSymbol from './HorseIconSymbol.vue'
 import RaceLane from './RaceLane.vue'
 

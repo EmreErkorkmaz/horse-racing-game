@@ -18,10 +18,10 @@
  */
 import { computed, onMounted, useId, useTemplateRef, watch } from 'vue'
 import type { Horse, Round, RoundResult } from '@/domain/types'
-import { formatFinishTime, roundLabel } from './format'
-import { useResultTables } from '@/composables/useResultTables'
-import HorseSwatch from './HorseSwatch.vue'
-import RoundTable from './RoundTable.vue'
+import { formatFinishTime, roundLabel } from '@/shared/format'
+import { useResultTables } from './useResultTables'
+import HorseSwatch from '@/shared/HorseSwatch.vue'
+import RoundTable from '@/shared/RoundTable.vue'
 
 const props = defineProps<{
   /** Whether the dialog is shown. */

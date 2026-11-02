@@ -3,8 +3,8 @@
  */
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import type { Horse, Round, RoundResult } from '@/domain/types'
-import type { RoundTableData } from './types'
-import { useHorseLookup } from './useHorseLookup'
+import type { RoundTableData } from '@/shared/types'
+import { useHorseLookup } from '@/shared/useHorseLookup'
 
 /**
  * Pairs each result with its round and resolves horse ids, keeping the order

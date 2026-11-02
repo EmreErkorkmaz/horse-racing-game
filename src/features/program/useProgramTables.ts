@@ -3,8 +3,8 @@
  */
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import type { Horse, Round } from '@/domain/types'
-import type { RoundTableData, RoundTableEntry } from './types'
-import { useHorseLookup } from './useHorseLookup'
+import type { RoundTableData, RoundTableEntry } from '@/shared/types'
+import { useHorseLookup } from '@/shared/useHorseLookup'
 
 /**
  * Builds one table per round, in program order. Each entry's position is its

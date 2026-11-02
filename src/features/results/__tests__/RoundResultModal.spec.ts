@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import type { RoundResult } from '@/domain/types'
 import RoundResultModal from '../RoundResultModal.vue'
-import RoundTable from '../RoundTable.vue'
-import { horses, results, rounds } from './fixtures'
+import RoundTable from '@/shared/RoundTable.vue'
+import { horses, results, rounds } from '@/shared/__tests__/fixtures'
 
 /** Both fixture rounds finished; the second one is the latest. */
 const twoResults: RoundResult[] = [

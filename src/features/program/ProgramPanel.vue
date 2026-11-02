@@ -4,9 +4,9 @@
  * The round that is on the track is highlighted.
  */
 import type { Horse, Round } from '@/domain/types'
-import { useProgramTables } from '@/composables/useProgramTables'
-import PanelSection from './PanelSection.vue'
-import RoundTable from './RoundTable.vue'
+import { useProgramTables } from './useProgramTables'
+import PanelSection from '@/shared/PanelSection.vue'
+import RoundTable from '@/shared/RoundTable.vue'
 
 const props = defineProps<{
   /** Rounds of the program, in race order. */

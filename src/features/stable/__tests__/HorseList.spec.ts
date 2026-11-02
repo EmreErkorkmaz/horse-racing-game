@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import HorseList from '../HorseList.vue'
-import { horses } from './fixtures'
+import { horses } from '@/shared/__tests__/fixtures'
 
 describe('HorseList', () => {
   it('titles the panel with the horse range', () => {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ResultsPanel from '../ResultsPanel.vue'
-import RoundTable from '../RoundTable.vue'
-import { horses, results, rounds } from './fixtures'
+import RoundTable from '@/shared/RoundTable.vue'
+import { horses, results, rounds } from '@/shared/__tests__/fixtures'
 
 describe('ResultsPanel', () => {
   it('has a Results heading', () => {

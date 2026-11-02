@@ -1,8 +1,8 @@
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import { ref } from 'vue'
 import type { Horse, Round } from '@/domain/types'
-import type { RoundTableData, RoundTableEntry } from '@/composables/types'
-import { horses, rounds } from '@/components/__tests__/fixtures'
+import type { RoundTableData, RoundTableEntry } from '@/shared/types'
+import { horses, rounds } from '@/shared/__tests__/fixtures'
 import { useProgramTables } from '../useProgramTables'
 
 /** Lane number and horse id of each row, which is what the program table shows. */

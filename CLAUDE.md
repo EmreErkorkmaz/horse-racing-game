@@ -9,15 +9,21 @@ src/
   config/game.ts      Game rules (horse counts, round distances, speeds). Single source for rules.
   domain/             Pure TypeScript, no Vue imports. Types, RNG, horse/schedule generation, race engine.
   stores/game.ts      Pinia store: game status machine, horses, program, results, live lane progress.
-  composables/        Vue glue: requestAnimationFrame race loop, table helpers for the components.
-  lib/                Framework-free browser helpers (URL seed).
-  components/         Presentational components: data in via props, intent out via emits. No store access.
+  features/           One folder per screen section; each holds its components, helpers and specs.
+    header/           AppHeader: horse count, speed, Generate Program, Start/Pause.
+    stable/           HorseList.
+    track/            RaceTrack, RaceLane, horse icon, gallop phase, requestAnimationFrame race loop.
+    program/          ProgramPanel and its table helper.
+    results/          ResultsPanel, RoundResultModal and their table helper.
+  shared/             Used by more than one section: GameLayout, PanelSection, RoundTable, HorseSwatch,
+                      formatting, view-model types, horse lookup, URL seed.
   App.vue             Container: reads the store, passes props, handles emits.
 ```
 
 Rules:
-- `domain/` never imports from Vue, Pinia or components.
-- Components never import the store; only `App.vue` does.
+- `domain/` never imports from Vue, Pinia, `features/` or `shared/`.
+- Code in `features/` and `shared/` never imports the store; only `App.vue` does. Components get data via props and send intent via emits.
+- A feature folder never imports from another feature folder; shared code goes to `shared/`.
 - Every rule value comes from `config/game.ts`, never a literal in code.
 - Randomness always goes through an injected `Rng` (seeded), never `Math.random()` directly.
 

@@ -9,16 +9,16 @@
  */
 import { storeToRefs } from 'pinia'
 import { useGameStore } from '@/stores/game'
-import { useRaceLoop } from '@/composables/useRaceLoop'
+import { useRaceLoop } from '@/features/track/useRaceLoop'
 import { GAME_CONFIG } from '@/config/game'
-import { randomSeed, resolveUrlSeed } from '@/lib/urlSeed'
-import AppHeader from '@/components/AppHeader.vue'
-import GameLayout from '@/components/GameLayout.vue'
-import HorseList from '@/components/HorseList.vue'
-import ProgramPanel from '@/components/ProgramPanel.vue'
-import RaceTrack from '@/components/RaceTrack.vue'
-import ResultsPanel from '@/components/ResultsPanel.vue'
-import RoundResultModal from '@/components/RoundResultModal.vue'
+import { randomSeed, resolveUrlSeed } from '@/shared/urlSeed'
+import AppHeader from '@/features/header/AppHeader.vue'
+import GameLayout from '@/shared/GameLayout.vue'
+import HorseList from '@/features/stable/HorseList.vue'
+import ProgramPanel from '@/features/program/ProgramPanel.vue'
+import RaceTrack from '@/features/track/RaceTrack.vue'
+import ResultsPanel from '@/features/results/ResultsPanel.vue'
+import RoundResultModal from '@/features/results/RoundResultModal.vue'
 
 const store = useGameStore()
 const {

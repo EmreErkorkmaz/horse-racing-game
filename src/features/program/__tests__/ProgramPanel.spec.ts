@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ProgramPanel from '../ProgramPanel.vue'
-import RoundTable from '../RoundTable.vue'
-import { horses, rounds } from './fixtures'
+import RoundTable from '@/shared/RoundTable.vue'
+import { horses, rounds } from '@/shared/__tests__/fixtures'
 
 describe('ProgramPanel', () => {
   it('has a Program heading', () => {

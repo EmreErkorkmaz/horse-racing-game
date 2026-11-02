@@ -4,8 +4,8 @@
  */
 import { computed } from 'vue'
 import type { Horse } from '@/domain/types'
-import HorseSwatch from './HorseSwatch.vue'
-import PanelSection from './PanelSection.vue'
+import HorseSwatch from '@/shared/HorseSwatch.vue'
+import PanelSection from '@/shared/PanelSection.vue'
 
 const props = defineProps<{
   /** Horses of the stable, in id order. */

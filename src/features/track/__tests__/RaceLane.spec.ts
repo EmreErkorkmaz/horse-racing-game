@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import RaceLane from '../RaceLane.vue'
 import HorseIcon from '../HorseIcon.vue'
 import { gallopPhase } from '../gallop'
-import { horses } from './fixtures'
+import { horses } from '@/shared/__tests__/fixtures'
 
 const horse = horses[0]!
 

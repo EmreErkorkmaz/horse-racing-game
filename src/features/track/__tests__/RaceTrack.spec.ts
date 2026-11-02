@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import RaceTrack from '../RaceTrack.vue'
 import RaceLane from '../RaceLane.vue'
 import HorseIconSymbol from '../HorseIconSymbol.vue'
-import { horses, progress, rounds } from './fixtures'
+import { horses, progress, rounds } from '@/shared/__tests__/fixtures'
 
 const round = rounds[0]!
 
