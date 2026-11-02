@@ -19,9 +19,10 @@ describe('HorseList', () => {
     const w = mount(HorseList, { props: { horses } })
     const rows = w.findAll('tbody tr')
     expect(rows).toHaveLength(4)
-    const cells = rows[3]!.findAll('td').map((td) => td.text())
-    expect(cells).toEqual(['4', 'Linus Torvalds', '99', 'Yellow'])
-    expect(rows[3]!.find('.swatch').exists()).toBe(true)
+    const cells = rows[3]!.findAll('td')
+    expect(cells.slice(0, 3).map((td) => td.text())).toEqual(['4', 'Linus Torvalds', '99'])
+    expect(cells[3]!.find('.swatch').exists()).toBe(true)
+    expect(cells[3]!.text()).toMatch(/Yellow$/)
   })
 
   it('has column headers', () => {

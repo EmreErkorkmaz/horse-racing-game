@@ -7,7 +7,8 @@ describe('HorseSwatch', () => {
   it('shows the horse number on a dot filled with the horse color', () => {
     const w = mount(HorseSwatch, { props: { horse: horses[1]! } })
     expect(w.text()).toBe('2')
-    expect(w.get('.swatch').attributes('style')).toContain('background-color: #1e88e5')
+    // jsdom normalizes hex colors to rgb().
+    expect(w.get<HTMLElement>('.swatch').element.style.backgroundColor).toBe('rgb(30, 136, 229)')
   })
 
   it('is hidden from assistive technology because the row already names the horse', () => {
