@@ -131,16 +131,29 @@ describe('rankRace', () => {
 
   it('orders horses by finishing time with 1-based positions', () => {
     const state = runToFinish(createRace(round(1200, [1, 2, 3]), horses, steadyRng), steadyRng)
-    expect(rankRace(state)).toEqual([
+    expect(rankRace(state).map(({ position, horseId }) => ({ position, horseId }))).toEqual([
       { position: 1, horseId: 2 },
       { position: 2, horseId: 3 },
       { position: 3, horseId: 1 },
     ])
   })
 
+  it('carries the crossing time of each horse into its placement', () => {
+    const state = runToFinish(createRace(round(1200, [1, 2, 3]), horses, steadyRng), steadyRng)
+    const timeOf = new Map(state.lanes.map((lane) => [lane.horseId, lane.finishTime]))
+    for (const placement of rankRace(state)) {
+      expect(placement.finishTime).toBe(timeOf.get(placement.horseId))
+    }
+  })
+
   it('ranks horses still running behind finished ones, by distance covered', () => {
     const state = steps(createRace(round(10, [1, 2, 3]), horses, steadyRng), 6, steadyRng)
     expect(rankRace(state).map((p) => p.horseId)).toEqual([2, 3, 1])
+  })
+
+  it('gives horses still running no finishing time', () => {
+    const state = steps(createRace(round(10, [1, 2, 3]), horses, steadyRng), 6, steadyRng)
+    expect(rankRace(state).map((p) => p.finishTime === null)).toEqual([false, true, true])
   })
 
   it('lets the fitter horse win most races without making it unbeatable', () => {

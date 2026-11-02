@@ -19,9 +19,9 @@ export const results: RoundResult[] = [
   {
     roundIndex: 0,
     placements: [
-      { position: 1, horseId: 4 },
-      { position: 2, horseId: 3 },
-      { position: 3, horseId: 1 },
+      { position: 1, horseId: 4, finishTime: 71250 },
+      { position: 2, horseId: 3, finishTime: 72480 },
+      { position: 3, horseId: 1, finishTime: 74010 },
     ],
   },
 ]

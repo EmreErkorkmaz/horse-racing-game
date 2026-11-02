@@ -24,6 +24,12 @@ describe('useProgramTables', () => {
     ])
   })
 
+  it('carries no finishing times, since the rounds have not run yet', () => {
+    const tables = useProgramTables(rounds, horses)
+    const times = tables.value.flatMap((table) => table.entries.map((entry) => entry.finishTime))
+    expect(times.every((time) => time === undefined)).toBe(true)
+  })
+
   it('skips horses missing from the stable and keeps the numbers consecutive', () => {
     const tables = useProgramTables(
       rounds,

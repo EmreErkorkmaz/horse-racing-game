@@ -16,9 +16,9 @@ describe('ResultsPanel', () => {
     expect(tables).toHaveLength(1)
     expect(tables[0]!.props('round')).toEqual(rounds[0])
     expect(tables[0]!.props('entries')).toEqual([
-      { position: 1, horse: horses[3] },
-      { position: 2, horse: horses[2] },
-      { position: 3, horse: horses[0] },
+      { position: 1, horse: horses[3], finishTime: 71250 },
+      { position: 2, horse: horses[2], finishTime: 72480 },
+      { position: 3, horse: horses[0], finishTime: 74010 },
     ])
   })
 
@@ -27,8 +27,8 @@ describe('ResultsPanel', () => {
       {
         roundIndex: 0,
         placements: [
-          { position: 2, horseId: 1 },
-          { position: 1, horseId: 3 },
+          { position: 2, horseId: 1, finishTime: 75000 },
+          { position: 1, horseId: 3, finishTime: 74000 },
         ],
       },
     ]
@@ -38,6 +38,11 @@ describe('ResultsPanel', () => {
       .props('entries')
       .map((e) => e.position)
     expect(positions).toEqual([1, 2])
+  })
+
+  it('keeps its tables to Position and Name, without times', () => {
+    const w = mount(ResultsPanel, { props: { rounds, results, horses } })
+    expect(w.getComponent(RoundTable).props('showTime')).toBe(false)
   })
 
   it('leaves result announcements to the round result modal', () => {
@@ -53,7 +58,10 @@ describe('ResultsPanel', () => {
   it('adds a table when a new result arrives', async () => {
     const w = mount(ResultsPanel, { props: { rounds, results, horses } })
     await w.setProps({
-      results: [...results, { roundIndex: 1, placements: [{ position: 1, horseId: 2 }] }],
+      results: [
+        ...results,
+        { roundIndex: 1, placements: [{ position: 1, horseId: 2, finishTime: 82340 }] },
+      ],
     })
     expect(w.findAllComponents(RoundTable)).toHaveLength(2)
   })

@@ -11,10 +11,10 @@ const twoResults: RoundResult[] = [
   {
     roundIndex: 1,
     placements: [
-      { position: 1, horseId: 2 },
-      { position: 2, horseId: 1 },
-      { position: 3, horseId: 4 },
-      { position: 4, horseId: 3 },
+      { position: 1, horseId: 2, finishTime: 82340 },
+      { position: 2, horseId: 1, finishTime: 83105 },
+      { position: 3, horseId: 4, finishTime: 84990 },
+      { position: 4, horseId: 3, finishTime: 86020 },
     ],
   },
 ]
@@ -77,6 +77,24 @@ describe('RoundResultModal', () => {
     const w = mountModal({})
     expect(w.get('h2').text()).toBe('Round 2 - 1400m finished')
     expect(w.get('[data-test="winner"]').text()).toContain('Grace Hopper')
+  })
+
+  it('shows the winning time next to the winner', () => {
+    const w = mountModal({})
+    expect(w.get('[data-test="winner"]').text()).toContain('Grace Hopper · 1:22.34')
+  })
+
+  it('shows every finishing time in the latest and the earlier rounds', () => {
+    const w = mountModal({})
+    const tables = w.findAllComponents(RoundTable)
+    expect(tables).toHaveLength(2)
+    expect(tables.map((table) => table.props('showTime'))).toEqual([true, true])
+  })
+
+  it('titles each earlier round with its winning time', () => {
+    const summary = mountModal({}).get('details summary').text()
+    expect(summary).toContain('Linus Torvalds')
+    expect(summary).toContain('1:11.25')
   })
 
   it('shows every placement of the latest round', () => {
