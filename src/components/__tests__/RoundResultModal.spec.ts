@@ -47,6 +47,20 @@ afterEach(() => {
 })
 
 describe('RoundResultModal', () => {
+  it('opens only after its content is rendered, so autofocus finds the action button', async () => {
+    let buttonPresentOnOpen = false
+    HTMLDialogElement.prototype.showModal = vi.fn<(this: HTMLDialogElement) => void>(function (
+      this: HTMLDialogElement,
+    ) {
+      buttonPresentOnOpen = this.querySelector('[data-test="next-round"]') !== null
+      this.setAttribute('open', '')
+    })
+    // The first round result and the open flag arrive in the same update.
+    const w = mountModal({ open: false, results: [] })
+    await w.setProps({ open: true, results })
+    expect(buttonPresentOnOpen).toBe(true)
+  })
+
   it('opens as a modal dialog when open and closes when no longer open', async () => {
     const w = mountModal({ open: true })
     expect(w.get('dialog').attributes('open')).toBe('')
