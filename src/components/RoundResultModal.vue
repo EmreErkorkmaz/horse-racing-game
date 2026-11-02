@@ -63,7 +63,8 @@ function sync(open: boolean): void {
 }
 
 onMounted(() => sync(props.open))
-watch(() => props.open, sync)
+// After the DOM update, so the content and its autofocus button exist when the dialog opens.
+watch(() => props.open, sync, { flush: 'post' })
 
 /** Reopens the dialog if it was closed by the browser rather than by the parent. */
 function onClose(): void {
