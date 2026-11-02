@@ -34,6 +34,7 @@ const {
   isLastRound,
   isRaceRunning,
   isAwaitingRoundChoice,
+  isProgramFinished,
 } = storeToRefs(store)
 
 const { seed, url } = resolveUrlSeed(new URL(window.location.href), randomSeed)
@@ -62,6 +63,7 @@ useRaceLoop(isRaceRunning, store.tick, { maxFrameMs: GAME_CONFIG.race.maxFrameMs
         :horses="horses"
         :progress="progress"
         :running="isRaceRunning"
+        :finished="isProgramFinished"
       />
     </template>
     <template #horses>

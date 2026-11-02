@@ -52,6 +52,9 @@ export const useGameStore = defineStore('game', () => {
   /** A round has ended and the next round or the finish must be chosen. */
   const isAwaitingRoundChoice = computed(() => rules.isAwaitingRoundChoice(status.value))
 
+  /** The program is over; only a new program or a new stable can follow. */
+  const isProgramFinished = computed(() => rules.isProgramFinished(status.value))
+
   /** The round on the track: the active one, or the first one before the start. */
   const currentRound = computed<Round | null>(
     () => program.value[currentRoundIndex.value ?? 0] ?? null,
@@ -171,6 +174,7 @@ export const useGameStore = defineStore('game', () => {
     horseCount,
     isRaceRunning,
     isAwaitingRoundChoice,
+    isProgramFinished,
     currentRound,
     progress,
     lastResult,

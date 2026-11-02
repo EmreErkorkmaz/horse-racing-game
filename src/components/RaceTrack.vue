@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
  * Race track of the active round: one lane per runner, a finish line and
- * a `Round N - XXXXm` label, or an empty state when no round is active.
+ * a label (the round, a start hint before a program exists, or a race-again
+ * hint once the program is finished).
  *
  * `progress` changes every animation frame. Each lane receives a plain
  * number (`fraction`), so a frame only re-renders the lanes whose horse
@@ -24,11 +25,19 @@ const props = withDefaults(
     progress: LaneProgress[]
     /** True while the race clock runs; drives the gallop animation only. */
     running?: boolean
+    /** True once the program is over; the label then tells how to race again. */
+    finished?: boolean
   }>(),
-  { running: false },
+  { running: false, finished: false },
 )
 
 const horseById = useHorseLookup(toRef(props, 'horses'))
+
+const label = computed(() => {
+  if (props.finished) return 'Program finished. Generate a new program to race again.'
+  if (props.round) return roundLabel(props.round)
+  return 'Generate a program and press Start to begin the race.'
+})
 
 const lanes = computed(() => {
   const round = props.round
@@ -68,7 +77,7 @@ const lanes = computed(() => {
       <div class="finish-line" aria-hidden="true"><span>Finish</span></div>
     </div>
     <h2 class="track-label">
-      {{ round ? roundLabel(round) : 'Generate a program and press Start to begin the race.' }}
+      {{ label }}
     </h2>
   </section>
 </template>

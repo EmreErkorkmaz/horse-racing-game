@@ -41,3 +41,8 @@ export function isRaceRunning(status: GameStatus): boolean {
 export function isAwaitingRoundChoice(status: GameStatus): boolean {
   return status === 'roundFinished'
 }
+
+/** The program is over, either after its last round or ended early. */
+export function isProgramFinished(status: GameStatus): boolean {
+  return status === 'finished'
+}
