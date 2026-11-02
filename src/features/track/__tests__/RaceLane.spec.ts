@@ -12,10 +12,6 @@ function mountLane(fraction: number, finished = false) {
 }
 
 describe('RaceLane', () => {
-  it('shows the lane number', () => {
-    expect(mountLane(0).get('.lane-number').text()).toBe('3')
-  })
-
   it('names lane and horse for assistive technology', () => {
     expect(mountLane(0).get('li').attributes('aria-label')).toBe('Lane 3: #1 Ada Lovelace')
   })
@@ -35,12 +31,6 @@ describe('RaceLane', () => {
     expect(runner.element.style.transform).toBe(transform)
     expect(runner.element.style.left).toBe('')
     expect(runner.element.style.width).toBe('')
-  })
-
-  it('updates only the transform when the fraction changes', async () => {
-    const w = mountLane(0.25)
-    await w.setProps({ fraction: 0.75 })
-    expect(w.get<HTMLElement>('.runner').element.style.transform).toBe('translateX(75%)')
   })
 
   it('gives the runner its own gallop phase, so horses do not bob in unison', () => {

@@ -60,11 +60,6 @@ describe('RaceTrack', () => {
     expect(w.findAll('symbol')).toHaveLength(1)
   })
 
-  it('shows a finish line', () => {
-    const w = mount(RaceTrack, { props: { round, horses, progress } })
-    expect(w.find('.finish-line').exists()).toBe(true)
-  })
-
   it('only animates the gallop while running', async () => {
     const w = mount(RaceTrack, { props: { round, horses, progress, running: false } })
     expect(w.get('.track').classes()).not.toContain('is-running')

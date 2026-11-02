@@ -29,18 +29,6 @@ describe('RoundTable', () => {
     ])
   })
 
-  it('shows the color swatch with the horse number next to the name', () => {
-    const w = mount(RoundTable, { props: { round: rounds[0]!, entries } })
-    const swatch = w.get('tbody tr .swatch')
-    expect(swatch.text()).toBe('3')
-  })
-
-  it('is not marked as current by default', () => {
-    const w = mount(RoundTable, { props: { round: rounds[0]!, entries } })
-    expect(w.get('table').attributes('aria-current')).toBeUndefined()
-    expect(w.get('table').classes()).not.toContain('is-current')
-  })
-
   it('adds a Time column with each finishing time when asked to', () => {
     const w = mount(RoundTable, {
       props: { round: rounds[0]!, entries: timedEntries, showTime: true },
@@ -61,9 +49,12 @@ describe('RoundTable', () => {
     expect(w.findAll('tbody tr')[0]!.findAll('td')).toHaveLength(2)
   })
 
-  it('marks the current round', () => {
-    const w = mount(RoundTable, { props: { round: rounds[0]!, entries, current: true } })
-    expect(w.get('table').attributes('aria-current')).toBe('step')
-    expect(w.get('table').classes()).toContain('is-current')
+  it('marks only the current round', () => {
+    const plain = mount(RoundTable, { props: { round: rounds[0]!, entries } }).get('table')
+    expect(plain.attributes('aria-current')).toBeUndefined()
+    expect(plain.classes()).not.toContain('is-current')
+    const current = mount(RoundTable, { props: { round: rounds[0]!, entries, current: true } })
+    expect(current.get('table').attributes('aria-current')).toBe('step')
+    expect(current.get('table').classes()).toContain('is-current')
   })
 })

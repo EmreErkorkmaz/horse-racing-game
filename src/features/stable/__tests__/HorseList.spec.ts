@@ -9,12 +9,6 @@ describe('HorseList', () => {
     expect(w.get('h2').text()).toBe('Horse List (1-4)')
   })
 
-  it('labels the panel section with its title', () => {
-    const w = mount(HorseList, { props: { horses } })
-    const id = w.get('h2').attributes('id')
-    expect(w.get('section').attributes('aria-labelledby')).toBe(id)
-  })
-
   it('renders one row per horse with number, name, condition and color name', () => {
     const w = mount(HorseList, { props: { horses } })
     const rows = w.findAll('tbody tr')

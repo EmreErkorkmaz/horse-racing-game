@@ -68,19 +68,9 @@ describe('RoundResultModal', () => {
     expect(w.get('dialog').attributes('open')).toBeUndefined()
   })
 
-  it('stays closed while not open', () => {
-    const w = mountModal({ open: false })
-    expect(w.get('dialog').attributes('open')).toBeUndefined()
-  })
-
-  it('names the finished round and its winner', () => {
+  it('names the finished round, its winner and the winning time', () => {
     const w = mountModal({})
     expect(w.get('h2').text()).toBe('Round 2 - 1400m finished')
-    expect(w.get('[data-test="winner"]').text()).toContain('Grace Hopper')
-  })
-
-  it('shows the winning time next to the winner', () => {
-    const w = mountModal({})
     expect(w.get('[data-test="winner"]').text()).toContain('Grace Hopper · 1:22.34')
   })
 
@@ -144,13 +134,6 @@ describe('RoundResultModal', () => {
     expect(w.get('[data-test="finish"]').attributes('autofocus')).toBeUndefined()
   })
 
-  it('cannot be dismissed with the Escape key', () => {
-    const w = mountModal({})
-    const cancel = new Event('cancel', { cancelable: true })
-    w.get('dialog').element.dispatchEvent(cancel)
-    expect(cancel.defaultPrevented).toBe(true)
-  })
-
   it('reopens itself if the browser closes it while still open', () => {
     const w = mountModal({ open: true })
     const dialog = w.get('dialog').element as HTMLDialogElement
@@ -167,8 +150,11 @@ describe('RoundResultModal', () => {
     expect(w.get('dialog').attributes('open')).toBeUndefined()
   })
 
-  it('opts out of light dismiss and offers no close button', () => {
+  it('cannot be dismissed: no Escape, no light dismiss, no close button', () => {
     const w = mountModal({})
+    const cancel = new Event('cancel', { cancelable: true })
+    w.get('dialog').element.dispatchEvent(cancel)
+    expect(cancel.defaultPrevented).toBe(true)
     expect(w.get('dialog').attributes('closedby')).toBe('none')
     expect(w.findAll('button').map((b) => b.text())).toEqual(['Next round', 'Finish'])
   })

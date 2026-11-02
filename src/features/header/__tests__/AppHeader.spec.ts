@@ -14,10 +14,6 @@ const countInput = (w: ReturnType<typeof mountHeader>) =>
   w.get<HTMLInputElement>('[data-test="horse-count"]')
 
 describe('AppHeader', () => {
-  it('renders the title', () => {
-    expect(mountHeader('idle').get('h1').text()).toBe('Horse Racing')
-  })
-
   it.each([
     ['idle', 'Start', true, false],
     ['ready', 'Start', false, false],

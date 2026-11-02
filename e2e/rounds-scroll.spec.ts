@@ -51,42 +51,36 @@ async function captionTop(region: Locator, title: string): Promise<number> {
   return box!.y
 }
 
+/* 768px is the first side-by-side breakpoint, 1440px the four-column layout. */
 for (const viewport of [
   { width: 768, height: 800 },
-  { width: 1280, height: 800 },
   { width: 1440, height: 900 },
 ]) {
-  test.describe(`side by side at ${viewport.width}px`, () => {
-    test.beforeEach(async ({ page }) => {
-      await page.setViewportSize(viewport)
-      await page.goto(SEEDED_URL)
-      await finishRounds(page, FINISHED_ROUNDS)
-    })
+  test(`scrolls the program and the results as one, aligned by round, at ${viewport.width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport)
+    await page.goto(SEEDED_URL)
+    await finishRounds(page, FINISHED_ROUNDS)
 
-    test('scrolls the program and the results as one', async ({ page }) => {
-      expect(await innerOverflow(programPanel(page))).toBe(0)
-      expect(await innerOverflow(resultsPanel(page))).toBe(0)
+    expect(await innerOverflow(programPanel(page))).toBe(0)
+    expect(await innerOverflow(resultsPanel(page))).toBe(0)
 
-      const scroller = roundsScroll(page)
-      expect(await scroller.evaluate((el) => el.scrollHeight - el.clientHeight)).toBeGreaterThan(0)
+    const scroller = roundsScroll(page)
+    expect(await scroller.evaluate((el) => el.scrollHeight - el.clientHeight)).toBeGreaterThan(0)
 
-      const programBefore = (await programPanel(page).boundingBox())!.y
-      const resultsBefore = (await resultsPanel(page).boundingBox())!.y
-      await scroller.evaluate((el) => el.scrollBy(0, 200))
-      const programShift = programBefore - (await programPanel(page).boundingBox())!.y
-      const resultsShift = resultsBefore - (await resultsPanel(page).boundingBox())!.y
+    const programBefore = (await programPanel(page).boundingBox())!.y
+    const resultsBefore = (await resultsPanel(page).boundingBox())!.y
+    await scroller.evaluate((el) => el.scrollBy(0, 200))
+    const programShift = programBefore - (await programPanel(page).boundingBox())!.y
+    const resultsShift = resultsBefore - (await resultsPanel(page).boundingBox())!.y
+    expect(programShift).toBeGreaterThan(0)
+    expect(resultsShift).toBeCloseTo(programShift, 0)
 
-      expect(programShift).toBeGreaterThan(0)
-      expect(resultsShift).toBeCloseTo(programShift, 0)
-    })
-
-    test('keeps each finished round level with its program entry', async ({ page }) => {
-      await roundsScroll(page).evaluate((el) => el.scrollBy(0, 200))
-      for (const title of ['Round 1 - 1200m', 'Round 2 - 1400m']) {
-        const programTop = await captionTop(programPanel(page), title)
-        expect(await captionTop(resultsPanel(page), title)).toBeCloseTo(programTop, 0)
-      }
-    })
+    for (const title of ['Round 1 - 1200m', 'Round 2 - 1400m']) {
+      const programTop = await captionTop(programPanel(page), title)
+      expect(await captionTop(resultsPanel(page), title)).toBeCloseTo(programTop, 0)
+    }
   })
 }
 

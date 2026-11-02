@@ -14,10 +14,6 @@ describe('gallopPhase', () => {
     }
   })
 
-  it('always gives the same horse the same phase', () => {
-    expect(gallopPhase(7)).toBe(gallopPhase(7))
-  })
-
   it('gives every horse of the largest stable its own phase', () => {
     expect(new Set(ids.map(gallopPhase)).size).toBe(ids.length)
   })

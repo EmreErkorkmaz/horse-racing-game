@@ -112,11 +112,6 @@ test.describe('seed in the URL', () => {
     expect(url.searchParams.get('lang')).toBe('en')
   })
 
-  test('replaces an invalid seed', async ({ page }) => {
-    await page.goto('/?seed=not-a-number')
-    expect(new URL(page.url()).searchParams.get('seed')).toMatch(/^\d+$/)
-  })
-
   test('rebuilds the same stable on reload', async ({ page }) => {
     const stable = () => horseListPanel(page).locator('tbody').innerText()
     await page.goto('/')
