@@ -67,7 +67,7 @@ useRaceLoop(isRaceRunning, store.tick, { maxFrameMs: GAME_CONFIG.race.maxFrameMs
         :program-finished="isProgramFinished"
       />
     </template>
-    <template #horses>
+    <template #stable>
       <HorseList :horses="horses" />
     </template>
     <template #program>

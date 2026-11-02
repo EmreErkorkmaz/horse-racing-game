@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Page grid of the game, filled through named slots:
- * `header`, `horses`, `track`, `program` and `results`.
+ * `header`, `stable`, `track`, `program` and `results`.
  *
  * Wide screens (1440px and up): horse list | track | program | results.
  * Medium screens (768px and up): the track spans the first row, the three
@@ -14,7 +14,7 @@
  */
 defineSlots<{
   header(): unknown
-  horses(): unknown
+  stable(): unknown
   track(): unknown
   program(): unknown
   results(): unknown
@@ -26,7 +26,7 @@ defineSlots<{
     <div class="area-header"><slot name="header" /></div>
     <main class="main">
       <div class="area-track"><slot name="track" /></div>
-      <div class="area-horses"><slot name="horses" /></div>
+      <div class="area-stable"><slot name="stable" /></div>
       <div class="area-program"><slot name="program" /></div>
       <div class="area-results"><slot name="results" /></div>
     </main>
@@ -50,7 +50,7 @@ defineSlots<{
     'track'
     'results'
     'program'
-    'horses';
+    'stable';
 }
 
 .area-track {
@@ -58,8 +58,8 @@ defineSlots<{
   min-width: 0;
 }
 
-.area-horses {
-  grid-area: horses;
+.area-stable {
+  grid-area: stable;
 }
 
 .area-program {
@@ -70,7 +70,7 @@ defineSlots<{
   grid-area: results;
 }
 
-.area-horses,
+.area-stable,
 .area-program,
 .area-results {
   display: flex;
@@ -80,7 +80,7 @@ defineSlots<{
   max-height: 70vh;
 }
 
-.area-horses > :deep(*),
+.area-stable > :deep(*),
 .area-program > :deep(*),
 .area-results > :deep(*) {
   flex: 1 1 auto;
@@ -91,7 +91,7 @@ defineSlots<{
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-areas:
       'track track track'
-      'horses program results';
+      'stable program results';
   }
 }
 
@@ -110,11 +110,11 @@ defineSlots<{
       minmax(max-content, 1.2fr) minmax(0, 2.4fr) minmax(12rem, 1fr)
       minmax(12rem, 1fr);
     grid-template-rows: minmax(0, 1fr);
-    grid-template-areas: 'horses track program results';
+    grid-template-areas: 'stable track program results';
     align-items: start;
   }
 
-  .area-horses,
+  .area-stable,
   .area-program,
   .area-results {
     max-height: 100%;
