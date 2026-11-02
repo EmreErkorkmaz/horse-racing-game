@@ -131,7 +131,8 @@ export const useGameStore = defineStore('game', () => {
    * waits for `nextRound` or `finish`.
    */
   function tick(realMs: number): void {
-    if (!isRaceRunning.value || !race.value) return
+    const roundIndex = currentRoundIndex.value
+    if (!isRaceRunning.value || !race.value || roundIndex === null) return
     const { stepMs, timeScale } = GAME_CONFIG.race
     pendingMs += realMs * timeScale * speed.value
 
@@ -143,10 +144,7 @@ export const useGameStore = defineStore('game', () => {
     race.value = state
 
     if (isRaceFinished(state)) {
-      results.value = [
-        ...results.value,
-        { roundIndex: currentRoundIndex.value ?? 0, placements: rankRace(state) },
-      ]
+      results.value = [...results.value, { roundIndex, placements: rankRace(state) }]
       pendingMs = 0
       status.value = 'roundFinished'
     }
@@ -154,8 +152,9 @@ export const useGameStore = defineStore('game', () => {
 
   /** Starts the following round of the program. */
   function nextRound(): void {
-    if (!isAwaitingRoundChoice.value || isLastRound.value) return
-    startRound((currentRoundIndex.value ?? 0) + 1)
+    const roundIndex = currentRoundIndex.value
+    if (!isAwaitingRoundChoice.value || isLastRound.value || roundIndex === null) return
+    startRound(roundIndex + 1)
   }
 
   /** Ends the program after the current round; remaining rounds are not run. */
