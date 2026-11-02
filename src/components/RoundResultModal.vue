@@ -10,6 +10,11 @@
  * `closedby="none"` opts out of light dismiss, the `cancel` event of the
  * Escape key is prevented and there is no close button. It closes only when
  * the parent sets `open` to false in response to `next` or `finish`.
+ *
+ * Browsers may still close a modal dialog on their own (Chrome closes it on a
+ * repeated Escape press without user activation; Safari ignores `closedby`).
+ * The `close` event reopens the dialog while `open` is true, so the game can
+ * never get stuck behind a hidden modal.
  */
 import { computed, onMounted, useId, useTemplateRef, watch } from 'vue'
 import type { Horse, Round, RoundResult } from '@/domain/types'
@@ -59,10 +64,22 @@ function sync(open: boolean): void {
 
 onMounted(() => sync(props.open))
 watch(() => props.open, sync)
+
+/** Reopens the dialog if it was closed by the browser rather than by the parent. */
+function onClose(): void {
+  sync(props.open)
+}
 </script>
 
 <template>
-  <dialog ref="dialog" class="modal" closedby="none" :aria-labelledby="titleId" @cancel.prevent>
+  <dialog
+    ref="dialog"
+    class="modal"
+    closedby="none"
+    :aria-labelledby="titleId"
+    @cancel.prevent
+    @close="onClose"
+  >
     <template v-if="latest">
       <header class="modal-header">
         <h2 :id="titleId" class="modal-title">{{ roundLabel(latest.round) }} finished</h2>
