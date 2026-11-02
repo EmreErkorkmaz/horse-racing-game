@@ -16,9 +16,9 @@ describe('ProgramPanel', () => {
     expect(tables).toHaveLength(2)
     expect(tables[0]!.props('round')).toEqual(rounds[0])
     expect(tables[0]!.props('entries')).toEqual([
-      { position: 1, horse: horses[2] },
-      { position: 2, horse: horses[0] },
-      { position: 3, horse: horses[3] },
+      { position: 1, horse: horses[2], finishTime: null },
+      { position: 2, horse: horses[0], finishTime: null },
+      { position: 3, horse: horses[3], finishTime: null },
     ])
   })
 
@@ -30,7 +30,9 @@ describe('ProgramPanel', () => {
   it('skips horse ids that are not in the stable', () => {
     const broken = [{ index: 0, distance: 1200, horseIds: [1, 99] }]
     const w = mount(ProgramPanel, { props: { rounds: broken, horses, currentRoundIndex: null } })
-    expect(w.getComponent(RoundTable).props('entries')).toEqual([{ position: 1, horse: horses[0] }])
+    expect(w.getComponent(RoundTable).props('entries')).toEqual([
+      { position: 1, horse: horses[0], finishTime: null },
+    ])
   })
 
   it('shows an empty state before a program exists', () => {

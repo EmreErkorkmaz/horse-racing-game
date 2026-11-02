@@ -4,8 +4,8 @@ import RoundTable from '../RoundTable.vue'
 import { horses, rounds } from './fixtures'
 
 const entries = [
-  { position: 1, horse: horses[2]! },
-  { position: 2, horse: horses[0]! },
+  { position: 1, horse: horses[2]!, finishTime: null },
+  { position: 2, horse: horses[0]!, finishTime: null },
 ]
 
 const timedEntries = [
