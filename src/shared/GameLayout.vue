@@ -19,9 +19,9 @@
  * screens and in the phone tabs; only the tablet grid shows it below them.
  *
  * Program and Results sit in one scroll container, so their rounds stay side
- * by side while scrolling. On narrow screens the page stays one screen tall:
- * the track and the tabs keep their height and the active panel scrolls in
- * the space left.
+ * by side while scrolling. On phones the page scrolls past the header and the
+ * track, the tabs stick to the top and the active panel fills the rest of the
+ * screen, scrolling inside itself.
  *
  * The tab panel roles stay on wider screens, where the tab list is hidden;
  * applying them only on phones would need script, so this is accepted.
@@ -93,20 +93,24 @@ function panelAttrs(id: PanelId) {
 
 <style scoped>
 /*
- * Base: phones, one screen tall. The track and the tabs keep their height and
- * only the panel of the selected tab is shown, filling the space left and
- * scrolling inside itself.
+ * Base: phones. Only the panel of the selected tab is shown. The page scrolls
+ * past the header and the track; the tabs then stick to the top and the panel
+ * is capped at the rest of the screen, scrolling inside itself. A fixed
+ * one-screen page left only a few rows once mobile browser bars took their
+ * share of the height.
  */
 .layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .main {
+  /* Tab bar height; the panel below it gets the rest of the screen. */
+  --tabs-height: 2.25rem;
+
   flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -117,15 +121,33 @@ function panelAttrs(id: PanelId) {
   min-width: 0;
 }
 
+.area-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: var(--tabs-height);
+}
+
+.area-stable,
+.area-rounds {
+  /* Screen height minus the sticky tabs, the gap and the bottom padding. */
+  max-height: calc(100vh - var(--tabs-height) - 1.5rem);
+  max-height: calc(100dvh - var(--tabs-height) - 1.5rem);
+}
+
 .area-stable,
 .area-rounds,
 .area-program,
 .area-results {
   display: flex;
   flex-direction: column;
-  flex: 1;
   min-width: 0;
   min-height: 0;
+}
+
+.area-program,
+.area-results {
+  flex: 1 1 auto;
 }
 
 /* Each panel fills its area. */
@@ -142,12 +164,6 @@ function panelAttrs(id: PanelId) {
 }
 
 @media (min-width: 768px) {
-  .layout {
-    height: auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-  }
-
   .area-tabs {
     display: none;
   }
