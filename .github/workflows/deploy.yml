@@ -16,8 +16,16 @@ concurrency:
 
 jobs:
   pages:
-    if: github.event.workflow_run.conclusion == 'success'
+    # Only a successful CI run for a push to this repository may deploy. A pull
+    # request from a fork can also run CI on a branch named main; its code must
+    # never be built next to the Cloudflare token.
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
+    # The Cloudflare secrets live on this environment, so only this job can read them.
+    environment: production
     steps:
       - uses: actions/checkout@v4
         with:
