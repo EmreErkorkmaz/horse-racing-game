@@ -7,10 +7,10 @@
  * Medium screens (768px and up): the track spans the first row, the three
  * panels share the second. Below 1440px four columns would leave the Program
  * and Results tables too narrow for a horse name on one line.
- * Narrow screens (below 768px): one column; the track stays on top and the
- * horse list, program and results sit behind tabs, one panel at a time. The
- * breakpoint lives only in the CSS: the inactive panels stay mounted and are
- * hidden there, so their scroll positions survive a tab switch.
+ * Narrow screens (below 768px, the base styles): one column; the track stays
+ * on top and the horse list, program and results sit behind tabs, one panel at
+ * a time. The breakpoint lives only in the CSS: the inactive panels stay
+ * mounted and are hidden there, so their scroll positions survive a tab switch.
  *
  * Program and Results sit in one scroll container, so their rounds stay side
  * by side while scrolling. On narrow screens the page stays one screen tall:
@@ -86,145 +86,104 @@ function panelAttrs(id: PanelId) {
 </template>
 
 <style scoped>
+/*
+ * Base: phones, one screen tall. The track and the tabs keep their height and
+ * only the panel of the selected tab is shown, filling the space left and
+ * scrolling inside itself.
+ */
 .layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
 }
 
 .main {
-  display: grid;
-  gap: 1rem;
-  padding: 1rem;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    'track'
-    'tabs'
-    'rounds'
-    'stable';
-}
-
-.area-tabs {
-  grid-area: tabs;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem;
 }
 
 .area-track {
-  grid-area: track;
   min-width: 0;
 }
 
-.area-stable {
-  grid-area: stable;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  max-height: 70vh;
-}
-
-.area-stable > :deep(*) {
-  flex: 1 1 auto;
-}
-
-/* Narrow screens: results above the program, and the page does the scrolling. */
-.area-rounds {
-  grid-area: rounds;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    'results'
-    'program';
-  /* Each panel is as tall as its content; a short Results panel does not stretch to the Program. */
-  align-items: start;
-  min-width: 0;
-}
-
+.area-stable,
+.area-rounds,
 .area-program,
 .area-results {
   display: flex;
+  flex-direction: column;
+  flex: 1;
   min-width: 0;
+  min-height: 0;
 }
 
-.area-program {
-  grid-area: program;
-}
-
-.area-results {
-  grid-area: results;
-}
-
-/* Each panel fills its column's width. */
+/* Each panel fills its area. */
+.area-stable > :deep(*),
 .area-program > :deep(*),
 .area-results > :deep(*) {
   flex: 1 1 auto;
 }
 
-/*
- * Phones: one screen tall. Only the panel of the selected tab is shown, and it
- * fills the space under the track and the tabs, scrolling inside itself.
- */
-@media (max-width: 767px) {
-  .layout {
-    height: 100vh;
-    height: 100dvh;
-  }
-
-  .main {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 0.75rem;
-  }
-
-  .area-stable,
-  .area-rounds,
-  .area-program,
-  .area-results {
-    flex: 1;
-    min-height: 0;
-    max-height: none;
-  }
-
-  .area-rounds {
-    display: flex;
-    flex-direction: column;
-    /* The wider layouts align the rounds to the top; here the active panel spans the full width. */
-    align-items: stretch;
-  }
-
-  [data-active='false'],
-  .area-rounds:not(:has(> [data-active='true'])) {
-    display: none;
-  }
+.main [data-active='false'],
+/* The Horses tab is active: hide the then empty rounds wrapper too. */
+.area-rounds:not(:has(> [data-active='true'])) {
+  display: none;
 }
 
 @media (min-width: 768px) {
+  .layout {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
   .area-tabs {
     display: none;
   }
 
   .main {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-areas:
       'track track track'
       'stable program results';
   }
 
+  /* Every panel shows again, whichever tab is selected. */
+  .main [data-active='false'] {
+    display: flex;
+  }
+
+  .area-track {
+    grid-area: track;
+  }
+
+  .area-stable {
+    grid-area: stable;
+    max-height: 70vh;
+  }
+
   /*
    * One scroller for both panels, so round N of the program stays level with
    * round N of the results. It spans the program and results columns of the
    * page grid and reuses them through subgrid, so each panel keeps exactly the
-   * width it would have on its own.
+   * width it would have on its own. Each panel is as tall as its content, so a
+   * short Results panel does not stretch to the Program.
    */
-  .area-rounds {
+  .main > .area-rounds {
+    display: grid;
     grid-row: program;
     grid-column: program-start / results-end;
     grid-template-columns: subgrid;
-    grid-template-areas: none;
+    gap: 1rem;
+    align-items: start;
     max-height: 70vh;
     overflow: auto;
     overscroll-behavior: contain;
@@ -263,7 +222,7 @@ function panelAttrs(id: PanelId) {
   }
 
   .area-stable,
-  .area-rounds {
+  .main > .area-rounds {
     max-height: 100%;
   }
 }

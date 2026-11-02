@@ -24,8 +24,9 @@ export function defaultPanel(programCount: number, resultCount: number): PanelId
 }
 
 /**
- * The active panel. It follows `defaultPanel` whenever the number of rounds
- * or results changes; a panel the player picks stays until that happens.
+ * The active panel. It follows `defaultPanel` whenever a program is drawn or
+ * a round finishes (the inputs are read again, even if a count stays the
+ * same); a panel the player picks stays until that happens.
  */
 export function usePanelTab(
   programCount: MaybeRefOrGetter<number>,
