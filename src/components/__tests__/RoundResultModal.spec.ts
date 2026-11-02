@@ -119,6 +119,22 @@ describe('RoundResultModal', () => {
     expect(cancel.defaultPrevented).toBe(true)
   })
 
+  it('reopens itself if the browser closes it while still open', () => {
+    const w = mountModal({ open: true })
+    const dialog = w.get('dialog').element as HTMLDialogElement
+    // Simulates a browser-initiated close, e.g. a repeated Escape press that bypasses `cancel`.
+    dialog.close()
+    dialog.dispatchEvent(new Event('close'))
+    expect(w.get('dialog').attributes('open')).toBe('')
+  })
+
+  it('stays closed after closing because it is no longer open', async () => {
+    const w = mountModal({ open: true })
+    await w.setProps({ open: false })
+    w.get('dialog').element.dispatchEvent(new Event('close'))
+    expect(w.get('dialog').attributes('open')).toBeUndefined()
+  })
+
   it('opts out of light dismiss and offers no close button', () => {
     const w = mountModal({})
     expect(w.get('dialog').attributes('closedby')).toBe('none')
