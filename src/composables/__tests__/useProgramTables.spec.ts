@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { ref } from 'vue'
 import type { Horse, Round } from '@/domain/types'
-import type { RoundTableEntry } from '@/components/types'
+import type { RoundTableEntry } from '@/composables/types'
 import { horses, rounds } from '@/components/__tests__/fixtures'
 import { useProgramTables } from '../useProgramTables'
 
