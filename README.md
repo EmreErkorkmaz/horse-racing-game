@@ -8,6 +8,8 @@ An interactive horse racing simulation built with Vue 3, TypeScript and Pinia.
 
 ## Features
 
+The numbers below are the defaults in [`src/config/game.ts`](src/config/game.ts), the single source for every rule; if they ever differ, the config file is right.
+
 - A stable of up to 20 horses, each with a unique name, a unique color and a condition score from 1 to 100.
 - **Generate Program** draws a six-round program (1200 m to 2200 m); each round enters 10 different horses in random lane order.
 - **Start / Pause / Resume** runs the rounds one after another on an animated ten-lane track.
@@ -91,7 +93,7 @@ npm run preview      # serve the production build
 npm run test:unit    # unit and component tests
 npm run test:e2e     # end-to-end tests against the production build
 npm run type-check
-npm run lint
+npm run lint         # lint and auto-fix (rewrites files)
 ```
 
 The first end-to-end run needs a browser: `npx playwright install chromium`.
@@ -99,5 +101,5 @@ The first end-to-end run needs a browser: `npx playwright install chromium`.
 ## Continuous integration and deployment
 
 - GitHub Actions runs lint, type-check, unit tests, the build and the end-to-end tests on every push and pull request.
-- Every successful run on `main` deploys the production build to Cloudflare Pages.
+- Every successful CI run for a push to `main` deploys the production build to Cloudflare Pages. Pull requests, including those from forks, never deploy.
 - Hashed assets are served with a one-year immutable cache.
