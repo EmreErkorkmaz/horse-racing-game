@@ -60,6 +60,8 @@ export interface RoundResult {
  * - `ready`: a program exists, no round has started.
  * - `running`: a round is in progress.
  * - `paused`: a round is in progress but the clock is stopped.
- * - `finished`: every round of the program has a result.
+ * - `roundFinished`: a round has just ended; the game waits for the choice
+ *   between the next round and finishing the program.
+ * - `finished`: the program is over, either after its last round or ended early.
  */
-export type GameStatus = 'idle' | 'ready' | 'running' | 'paused' | 'finished'
+export type GameStatus = 'idle' | 'ready' | 'running' | 'paused' | 'roundFinished' | 'finished'
