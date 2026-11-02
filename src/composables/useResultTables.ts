@@ -3,14 +3,8 @@
  */
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import type { Horse, Round, RoundResult } from '@/domain/types'
-import type { RoundTableEntry } from './types'
+import type { RoundTableData } from './types'
 import { useHorseLookup } from './useHorseLookup'
-
-/** A finished round with its placements resolved to horses, in finishing order. */
-export interface ResultTable {
-  round: Round
-  entries: RoundTableEntry[]
-}
 
 /**
  * Pairs each result with its round and resolves horse ids, keeping the order
@@ -24,7 +18,7 @@ export function useResultTables(
 ) {
   const horseById = useHorseLookup(horses)
 
-  return computed<ResultTable[]>(() => {
+  return computed<RoundTableData[]>(() => {
     const roundByIndex = new Map(toValue(rounds).map((round) => [round.index, round]))
     return toValue(results).flatMap((result) => {
       const round = roundByIndex.get(result.roundIndex)
