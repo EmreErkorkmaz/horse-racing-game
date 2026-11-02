@@ -17,9 +17,15 @@ describe('ResultsPanel', () => {
     ])
   })
 
-  it('keeps its tables to Position and Name, without times', () => {
+  it('shows the finishing time of every horse', () => {
     const w = mount(ResultsPanel, { props: { rounds, results, horses } })
-    expect(w.getComponent(RoundTable).props('showTime')).toBe(false)
+    expect(w.getComponent(RoundTable).props('showTime')).toBe(true)
+    expect(w.findAll('thead th').map((th) => th.text())).toEqual(['Position', 'Name', 'Time'])
+    expect(w.findAll('tbody tr').map((tr) => tr.findAll('td')[2]?.text())).toEqual([
+      '1:11.25',
+      '1:12.48',
+      '1:14.01',
+    ])
   })
 
   it('leaves result announcements to the round result modal', () => {

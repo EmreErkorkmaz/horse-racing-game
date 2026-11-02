@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { expectRoundModal, modal, resultsPanel, startGame } from './support/game'
 
 /** Horizontal overflow in pixels of the element matched by `selector`. */
 function overflowOf(page: Page, selector: string): Promise<number> {
@@ -47,6 +48,27 @@ for (const width of [1280, 1440]) {
         elements.map((row) => Math.round(row.getBoundingClientRect().height)),
       )
       // A wrapped name makes its row taller than the others.
+      expect(new Set(heights).size).toBe(1)
+    })
+  }
+}
+
+for (const width of [1280, 1440]) {
+  for (const font of fonts) {
+    test(`fits every result row, with its time, on one line at ${width}px with ${font.name}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto('/?seed=1')
+      await page.addStyleTag({ content: font.css })
+      await startGame(page)
+      await expectRoundModal(page, 1)
+      await modal(page).getByRole('button', { name: 'Finish' }).click()
+      const rows = resultsPanel(page).locator('tbody tr')
+      await expect(rows).toHaveCount(10)
+      const heights = await rows.evaluateAll((elements) =>
+        elements.map((row) => Math.round(row.getBoundingClientRect().height)),
+      )
       expect(new Set(heights).size).toBe(1)
     })
   }
