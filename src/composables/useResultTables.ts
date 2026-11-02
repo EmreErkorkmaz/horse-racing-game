@@ -31,9 +31,9 @@ export function useResultTables(
       if (!round) return []
       const entries = result.placements
         .toSorted((a, b) => a.position - b.position)
-        .flatMap(({ position, horseId }) => {
+        .flatMap(({ position, horseId, finishTime }) => {
           const horse = horseById.value.get(horseId)
-          return horse ? [{ position, horse }] : []
+          return horse ? [{ position, horse, finishTime }] : []
         })
       return [{ round, entries }]
     })

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /**
  * Table for a single round: a `Round N - XXXXm` caption followed by
- * Position / Name rows. Shared by the Program (lane order) and Results
+ * Position / Name rows, optionally with each finishing time. Shared by the Program (lane order) and Results
  * (finishing order) panels.
  */
 import type { Round } from '@/domain/types'
 import type { RoundTableEntry } from '@/composables/types'
-import { roundLabel } from './format'
+import { formatRaceTime, roundLabel } from './format'
 import HorseSwatch from './HorseSwatch.vue'
 
 withDefaults(
@@ -17,8 +17,10 @@ withDefaults(
     entries: RoundTableEntry[]
     /** Marks the round that is on the track. */
     current?: boolean
+    /** Adds a Time column with each entry's finishing time. */
+    showTime?: boolean
   }>(),
-  { current: false },
+  { current: false, showTime: false },
 )
 </script>
 
@@ -37,6 +39,7 @@ withDefaults(
       <tr>
         <th scope="col" class="position">Position</th>
         <th scope="col">Name</th>
+        <th v-if="showTime" scope="col" class="time">Time</th>
       </tr>
     </thead>
     <tbody>
@@ -44,6 +47,9 @@ withDefaults(
         <td class="position">{{ entry.position }}</td>
         <td>
           <span class="name"><HorseSwatch :horse="entry.horse" />{{ entry.horse.name }}</span>
+        </td>
+        <td v-if="showTime" class="time">
+          {{ entry.finishTime == null ? '' : formatRaceTime(entry.finishTime) }}
         </td>
       </tr>
     </tbody>
@@ -85,6 +91,12 @@ td {
 th {
   font-weight: 600;
   color: var(--color-muted);
+}
+
+.time {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .position {

@@ -45,6 +45,8 @@ export interface Placement {
   /** 1-based finishing position. */
   position: number
   horseId: number
+  /** Simulated race time in milliseconds when the horse crossed the line, or null while it is still running. */
+  finishTime: number | null
 }
 
 /** Outcome of a finished round. */

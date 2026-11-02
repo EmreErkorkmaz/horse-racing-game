@@ -7,4 +7,6 @@ import type { Horse } from '@/domain/types'
 export interface RoundTableEntry {
   position: number
   horse: Horse
+  /** Simulated finishing time in milliseconds; set for results, absent in the program. */
+  finishTime?: number | null
 }

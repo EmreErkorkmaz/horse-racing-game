@@ -93,7 +93,8 @@ export function isRaceFinished(state: RaceState): boolean {
 
 /**
  * Ranks the runners: finished horses by crossing time, then horses still
- * running by distance covered. Exact ties keep lane order.
+ * running by distance covered. Exact ties keep lane order. Each placement
+ * carries the horse's crossing time, or null for a horse still running.
  */
 export function rankRace(state: RaceState): Placement[] {
   return [...state.lanes]
@@ -103,5 +104,5 @@ export function rankRace(state: RaceState): Placement[] {
       if (b.finishTime !== null) return 1
       return b.covered - a.covered
     })
-    .map((lane, i) => ({ position: i + 1, horseId: lane.horseId }))
+    .map((lane, i) => ({ position: i + 1, horseId: lane.horseId, finishTime: lane.finishTime }))
 }
