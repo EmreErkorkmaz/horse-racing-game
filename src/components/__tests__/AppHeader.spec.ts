@@ -23,6 +23,7 @@ describe('AppHeader', () => {
     ['ready', 'Start', false, false],
     ['running', 'Pause', false, true],
     ['paused', 'Resume', false, false],
+    ['roundFinished', 'Start', true, true],
     ['finished', 'Start', true, false],
   ] as const)(
     'in %s: toggle label %s, toggle disabled %s, generate disabled %s',
@@ -81,7 +82,7 @@ describe('AppHeader', () => {
       expect(countInput(w).element.value).toBe('12')
     })
 
-    it.each(['running', 'paused'] as const)('is disabled while %s', (status) => {
+    it.each(['running', 'paused', 'roundFinished'] as const)('is disabled while %s', (status) => {
       expect(countInput(mountHeader(status)).attributes('disabled')).toBe('')
     })
 
