@@ -5,6 +5,9 @@
     // Callbacks passed to page.evaluate run in the browser, so DOM types are needed too.
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["node"],
+    // Playwright bundles the specs, so imports from src/ resolve like in the app.
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.e2e.tsbuildinfo"
   }
