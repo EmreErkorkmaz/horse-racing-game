@@ -28,6 +28,7 @@ defineProps<{
     <div class="lane-track">
       <div
         class="runner"
+        data-test="runner"
         :class="{ 'is-finished': finished }"
         :style="{ transform: `translateX(${fraction * 100}%)` }"
       >
