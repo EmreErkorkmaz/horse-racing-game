@@ -9,6 +9,7 @@
  * actually moved, and inside a lane only the runner transform changes.
  */
 import { computed } from 'vue'
+import type { SpeedMultiplier } from '@/config/game'
 import type { Horse, LaneProgress, Round } from '@/domain/types'
 import { roundLabel, toFraction } from './format'
 import { useHorseLookup } from '@/composables/useHorseLookup'
@@ -25,10 +26,12 @@ const props = withDefaults(
     progress: LaneProgress[]
     /** True while the race clock runs; drives the gallop animation only. */
     running?: boolean
+    /** Playback speed; the gallop cadence follows it. */
+    speed?: SpeedMultiplier
     /** True once the program is over; the label then tells how to race again. */
     programFinished?: boolean
   }>(),
-  { running: false, programFinished: false },
+  { running: false, speed: 1, programFinished: false },
 )
 
 const horseById = useHorseLookup(() => props.horses)
@@ -62,7 +65,7 @@ const lanes = computed(() => {
 <template>
   <section class="race-track" aria-label="Race track">
     <HorseIconSymbol />
-    <div class="track" :class="{ 'is-running': running }">
+    <div class="track" :class="{ 'is-running': running }" :style="{ '--speed': speed }">
       <ol v-if="lanes.length > 0" class="lanes">
         <RaceLane
           v-for="lane in lanes"

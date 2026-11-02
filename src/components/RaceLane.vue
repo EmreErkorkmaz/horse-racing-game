@@ -6,8 +6,11 @@
  * update touches one style property and stays on the compositor.
  * The runner box is as wide as the lane minus one horse, which makes
  * `translateX(100%)` place the horse's nose exactly on the finish line.
+ * Each runner starts its gallop at its own phase and casts a ground shadow
+ * that squashes as the horse lifts.
  */
 import type { Horse } from '@/domain/types'
+import { gallopPhase } from './gallop'
 import HorseIcon from './HorseIcon.vue'
 
 defineProps<{
@@ -30,9 +33,13 @@ defineProps<{
         class="runner"
         data-test="runner"
         :class="{ 'is-finished': finished }"
-        :style="{ transform: `translateX(${fraction * 100}%)` }"
+        :style="{
+          transform: `translateX(${fraction * 100}%)`,
+          '--gallop-phase': gallopPhase(horse.id),
+        }"
       >
         <span class="horse">
+          <span class="runner-shadow" data-test="runner-shadow" aria-hidden="true" />
           <HorseIcon :color="horse.color.hex" />
           <span class="runner-number" aria-hidden="true">{{ horse.id }}</span>
         </span>
@@ -74,6 +81,13 @@ defineProps<{
 }
 
 .runner {
+  /*
+   * One stride at 1x lasts 280 ms and shortens with the playback speed set on
+   * the track. Switching speed mid-race makes the bob jump phase once, which
+   * is accepted to keep the animation free of script.
+   */
+  --stride-duration: calc(280ms / var(--speed, 1));
+
   position: absolute;
   inset: 0 auto 0 0;
   width: calc(100% - var(--horse-width));
@@ -101,9 +115,38 @@ defineProps<{
   text-shadow: var(--shadow-on-silk);
 }
 
-/* Gallop bob while the race clock runs; transform-only, so it stays on the compositor. */
+/* Ground shadow under the hooves; painted behind the horse inside the runner layer. */
+.runner-shadow {
+  position: absolute;
+  z-index: -1;
+  left: 10%;
+  right: 20%;
+  bottom: 0.15rem;
+  height: 0.3rem;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.3);
+}
+
+/*
+ * Gallop while the race clock runs: the horse bobs and its shadow squashes in
+ * step, both starting at the runner's own phase. Transform and opacity only,
+ * so it stays on the compositor.
+ */
+.is-running .runner:not(.is-finished) .horse-icon,
+.is-running .runner:not(.is-finished) .runner-shadow {
+  animation-duration: var(--stride-duration);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-delay: calc(var(--gallop-phase) * var(--stride-duration) * -1);
+}
+
 .is-running .runner:not(.is-finished) .horse-icon {
-  animation: gallop 0.28s ease-in-out infinite alternate;
+  animation-name: gallop;
+}
+
+.is-running .runner:not(.is-finished) .runner-shadow {
+  animation-name: gallop-shadow;
 }
 
 @keyframes gallop {
@@ -115,8 +158,20 @@ defineProps<{
   }
 }
 
+@keyframes gallop-shadow {
+  from {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  to {
+    transform: scaleX(0.8);
+    opacity: 0.65;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .is-running .runner:not(.is-finished) .horse-icon {
+  .is-running .runner:not(.is-finished) .horse-icon,
+  .is-running .runner:not(.is-finished) .runner-shadow {
     animation: none;
   }
 }
