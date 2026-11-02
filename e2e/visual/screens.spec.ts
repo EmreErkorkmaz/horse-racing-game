@@ -30,7 +30,6 @@ interface ScreenState {
 }
 
 const states: ScreenState[] = [
-  { name: 'initial', reach: async () => {}, fullPage: true },
   {
     name: 'program',
     reach: async (page) => {
