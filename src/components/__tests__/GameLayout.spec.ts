@@ -13,11 +13,11 @@ const slots = {
 describe('GameLayout', () => {
   it('places every slot into its own grid area', () => {
     const w = mount(GameLayout, { slots })
-    expect(w.get('.area-header #h').exists()).toBe(true)
-    expect(w.get('.area-horses #l').exists()).toBe(true)
-    expect(w.get('.area-track #t').exists()).toBe(true)
-    expect(w.get('.area-program #p').exists()).toBe(true)
-    expect(w.get('.area-results #r').exists()).toBe(true)
+    expect(w.find('.area-header #h').exists()).toBe(true)
+    expect(w.find('.area-horses #l').exists()).toBe(true)
+    expect(w.find('.area-track #t').exists()).toBe(true)
+    expect(w.find('.area-program #p').exists()).toBe(true)
+    expect(w.find('.area-results #r').exists()).toBe(true)
   })
 
   it('renders the header outside and the panels inside the main landmark', () => {
