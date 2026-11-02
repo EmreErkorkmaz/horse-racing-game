@@ -30,10 +30,14 @@ function mountModal(
 
 /** jsdom does not implement the modal dialog API; these stand-ins toggle the `open` attribute. */
 beforeEach(() => {
-  HTMLDialogElement.prototype.showModal = vi.fn(function (this: HTMLDialogElement) {
+  HTMLDialogElement.prototype.showModal = vi.fn<(this: HTMLDialogElement) => void>(function (
+    this: HTMLDialogElement,
+  ) {
     this.setAttribute('open', '')
   })
-  HTMLDialogElement.prototype.close = vi.fn(function (this: HTMLDialogElement) {
+  HTMLDialogElement.prototype.close = vi.fn<(this: HTMLDialogElement) => void>(function (
+    this: HTMLDialogElement,
+  ) {
     this.removeAttribute('open')
   })
 })

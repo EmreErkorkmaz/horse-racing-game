@@ -135,11 +135,19 @@ describe('toggle', () => {
     expect(store.status).toBe('running')
   })
 
-  it('does nothing without a program or after the program', () => {
+  it('does nothing without a program', () => {
     const store = useGameStore()
     store.init(42)
     store.toggle()
     expect(store.status).toBe('idle')
+  })
+
+  it('does nothing after the program has finished', () => {
+    const store = readyStore()
+    finishFirstRound(store)
+    store.finish()
+    store.toggle()
+    expect(store.status).toBe('finished')
   })
 })
 
@@ -208,13 +216,12 @@ describe('nextRound', () => {
   it('is not available after the last round', () => {
     const store = readyStore()
     store.toggle()
-    for (let i = 0; i < ROUND_COUNT; i++) {
+    for (let i = 0; i < ROUND_COUNT - 1; i++) {
       store.tick(LONG_TICK)
-      if (i < ROUND_COUNT - 1) {
-        expect(store.isLastRound).toBe(false)
-        store.nextRound()
-      }
+      expect(store.isLastRound).toBe(false)
+      store.nextRound()
     }
+    store.tick(LONG_TICK)
     expect(store.isLastRound).toBe(true)
     store.nextRound()
     expect(store.status).toBe('roundFinished')
