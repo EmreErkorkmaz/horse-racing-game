@@ -145,10 +145,11 @@ const lanes = computed(() => {
   color: var(--color-accent);
 }
 
+/* Phones: slimmer lanes leave more of the one-screen layout to the active panel. */
 @media (max-width: 480px) {
   .race-track {
-    --lane-height: 2.25rem;
-    --horse-width: 2.75rem;
+    --lane-height: 1.875rem;
+    --horse-width: 2.5rem;
   }
 }
 </style>

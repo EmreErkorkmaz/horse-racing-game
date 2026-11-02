@@ -14,6 +14,7 @@ import { GAME_CONFIG } from '@/config/game'
 import { randomSeed, resolveUrlSeed } from '@/shared/urlSeed'
 import AppHeader from '@/features/header/AppHeader.vue'
 import GameLayout from '@/shared/GameLayout.vue'
+import { usePanelTab } from '@/shared/usePanelTab'
 import HorseList from '@/features/stable/HorseList.vue'
 import ProgramPanel from '@/features/program/ProgramPanel.vue'
 import RaceTrack from '@/features/track/RaceTrack.vue'
@@ -42,10 +43,15 @@ window.history.replaceState(window.history.state, '', url)
 store.init(seed)
 
 useRaceLoop(isRaceRunning, store.tick, { maxFrameMs: GAME_CONFIG.race.maxFrameMs })
+
+const activePanel = usePanelTab(
+  () => program.value.length,
+  () => results.value.length,
+)
 </script>
 
 <template>
-  <GameLayout>
+  <GameLayout v-model:active-panel="activePanel">
     <template #header>
       <AppHeader
         :status="status"
